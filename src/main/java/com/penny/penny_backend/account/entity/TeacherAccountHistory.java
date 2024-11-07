@@ -13,13 +13,25 @@ public class TeacherAccountHistory {
     private boolean inOrOut;
     private int sentUserId;
     private String content;
-    private LocalDateTime date;
+    private LocalDateTime datetime;
     private int amount;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
     private TeacherAccount teacherAccount;
 
+    public TeacherAccountHistory(Long historyId, boolean inOrOut, int sentUserId, String content, int amount, TeacherAccount teacherAccount) {
+        this.historyId = historyId;
+        this.inOrOut = inOrOut;
+        this.sentUserId = sentUserId;
+        this.content = content;
+        this.datetime = LocalDateTime.now();;
+        this.amount = amount;
+        this.teacherAccount = teacherAccount;
+    }
+
+    protected TeacherAccountHistory() {
+    }
 
     // getter & setter
     public Long getHistoryId() {
@@ -55,11 +67,11 @@ public class TeacherAccountHistory {
     }
 
     public LocalDateTime getDate() {
-        return date;
+        return datetime;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDate(LocalDateTime datetime) {
+        this.datetime = datetime;
     }
 
     public int getAmount() {
@@ -76,5 +88,21 @@ public class TeacherAccountHistory {
 
     public void setTeacherAccount(TeacherAccount teacherAccount) {
         this.teacherAccount = teacherAccount;
+        if (teacherAccount != null && !teacherAccount.getTeacherAccountHistories().contains(this)) {
+            teacherAccount.getTeacherAccountHistories().add(this); // teacherAccount에서 teacherAccountHistory를 추가
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "TeacherAccountHistory{" +
+                "historyId=" + historyId +
+                ", content='" + content + '\'' +
+                ", amount=" + amount +
+                ", inOrOut=" + inOrOut +
+                ", date=" + datetime +
+                ", sentUserId=" + sentUserId +
+                ", account=" + (teacherAccount != null ? teacherAccount.getTeacherId() : "null") +
+                '}';
     }
 }

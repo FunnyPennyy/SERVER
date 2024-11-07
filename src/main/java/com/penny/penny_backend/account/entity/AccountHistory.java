@@ -12,20 +12,23 @@ public class AccountHistory {
     private String content;
     private int amount;
     private boolean inOrOut;
-    private LocalDateTime date;
+    private LocalDateTime datetime;
     private Long sentUserId;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private Account account;
 
-    public AccountHistory(String content, int amount, boolean inOrOut, LocalDateTime date, Long sentUserId, Account account) {
+    public AccountHistory(String content, int amount, boolean inOrOut, Long sentUserId, Account account) {
         this.content = content;
         this.amount = amount;
         this.inOrOut = inOrOut;
-        this.date = date;
+        this.datetime = LocalDateTime.now();
         this.sentUserId = sentUserId;
         setAccount(account);
+    }
+
+    protected AccountHistory() {
     }
 
     // getter & setter
@@ -62,11 +65,11 @@ public class AccountHistory {
     }
 
     public LocalDateTime getDate() {
-        return date;
+        return datetime;
     }
 
     public void setDate(LocalDateTime date) {
-        this.date = date;
+        this.datetime = datetime;
     }
 
     public Long getSentUserId() {
@@ -95,9 +98,9 @@ public class AccountHistory {
                 ", content='" + content + '\'' +
                 ", amount=" + amount +
                 ", inOrOut=" + inOrOut +
-                ", date=" + date +
+                ", date=" + datetime +
                 ", sentUserId=" + sentUserId +
-                ", account=" + (account != null ? account.getStudentID() : "null") +
+                ", account=" + (account != null ? account.getStudentId() : "null") +
                 '}';
     }
 }

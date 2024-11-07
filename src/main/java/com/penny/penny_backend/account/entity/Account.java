@@ -1,42 +1,40 @@
 package com.penny.penny_backend.account.entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class Account {
     @Id
-    private Long studentID;
+    private Long studentId;
 
     private String nickname;
     private int amount;
     private String accountNum;
 
-    @OneToOne
-    @JoinColumn(name = "student_id", nullable = false)
-    private StudentUser studentUser;
-
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AccountHistory> accountHistories;
+    private List<AccountHistory> accountHistories = new ArrayList<>();
 
     // Constructor
-    public Account(String nickname, int amount, String accountNum, StudentUser studentUser) {
+    public Account(Long studentId, String nickname, int amount, String accountNum) {
+        this.studentId = studentId;
         this.nickname = nickname;
         this.amount = amount;
         this.accountNum = accountNum;
-        this.studentUser = studentUser;
     }
 
-    public Account() {
+    protected Account() {
     }
 
     // getter & setter
-    public Long getStudentID() {
-        return studentID;
+    public Long getStudentId() {
+        return studentId;
     }
 
-    public void setStudentID(Long studentID) {
-        this.studentID = studentID;
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
     }
 
     public String getNickname() {
@@ -63,14 +61,6 @@ public class Account {
         this.accountNum = accountNum;
     }
 
-    public StudentUser getStudentUser() {
-        return studentUser;
-    }
-
-    public void setStudentUser(StudentUser studentUser) {
-        this.studentUser = studentUser;
-    }
-
     public List<AccountHistory> getAccountHistories() {
         return accountHistories;
     }
@@ -87,11 +77,10 @@ public class Account {
     @Override
     public String toString() {
         return "Account{" +
-                "studentID=" + studentID +
+                "studentId=" + studentId +
                 ", nickname='" + nickname + '\'' +
                 ", amount=" + amount +
                 ", accountNum='" + accountNum + '\'' +
-                ", studentUser=" + studentUser +
                 ", accountHistories=" + accountHistories +
                 '}';
     }

@@ -1,22 +1,31 @@
 package com.penny.penny_backend.account.entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class TeacherAccount {
     @Id
     private Long teacherId;
+    private String nickname;
 
     private int amount;
     private String accountNum;
 
-    @OneToOne
-    @JoinColumn(name = "teacher_id", nullable = false)
-    private TeacherUser teacherUser;
-
     @OneToMany(mappedBy = "teacherAccount", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TeacherAccountHistory> teacherAccountHistories;
+    private List<TeacherAccountHistory> teacherAccountHistories = new ArrayList<>();
+
+    public TeacherAccount(Long teacherId, String nickname, int amount, String accountNum) {
+        this.teacherId = teacherId;
+        this.nickname = nickname;
+        this.amount = amount;
+        this.accountNum = accountNum;
+    }
+
+    protected TeacherAccount() {
+    }
 
     // getter & setter
     public Long getTeacherId() {
@@ -43,19 +52,26 @@ public class TeacherAccount {
         this.accountNum = accountNum;
     }
 
-    public TeacherUser getTeacherUser() {
-        return teacherUser;
-    }
-
-    public void setTeacherUser(TeacherUser teacherUser) {
-        this.teacherUser = teacherUser;
-    }
-
     public List<TeacherAccountHistory> getTeacherAccountHistories() {
         return teacherAccountHistories;
     }
 
     public void setTeacherAccountHistories(List<TeacherAccountHistory> teacherAccountHistories) {
         this.teacherAccountHistories = teacherAccountHistories;
+    }
+
+    public void addTeacherAccountHistory(TeacherAccountHistory teacherAccountHistory) {
+        teacherAccountHistories.add(teacherAccountHistory); // teacherAccount 엔티티에 teacherAccountHistory 추가
+        teacherAccountHistory.setTeacherAccount(this); // teacherAccountHistory 엔티티에 teacherAccount 설정
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "studentId=" + teacherId +
+                ", amount=" + amount +
+                ", accountNum='" + accountNum + '\'' +
+                ", accountHistories=" + teacherAccountHistories +
+                '}';
     }
 }
