@@ -1,4 +1,4 @@
-package com.penny.penny_backend.account.entity;
+package com.penny.penny_backend.domain;
 
 import jakarta.persistence.*;
 
