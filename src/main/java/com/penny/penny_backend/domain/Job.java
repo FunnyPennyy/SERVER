@@ -1,4 +1,5 @@
-package penny.penny_back.domain;
+
+package penny.penny_backend.domain;
 
 import javax.persistence.*;
 
@@ -9,12 +10,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-public class Teacher{
-    @Id
+public class Job {
+    @ID
     private Long id;
-
     private String name;
-    private String password;
 
     public Long getId() {
         return id;
@@ -32,20 +31,11 @@ public class Teacher{
         this.name = name;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     @java.lang.Override
     public java.lang.String toString() {
-        return "Teacher{" +
+        return "Job{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 '}';
     }
 }

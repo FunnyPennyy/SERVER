@@ -9,11 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-public class Teacher{
+public class Classroom {
+
     @Id
     private Long id;
-
     private String name;
+    private String username;
     private String password;
 
     public Long getId() {
@@ -32,6 +33,14 @@ public class Teacher{
         this.name = name;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -42,9 +51,10 @@ public class Teacher{
 
     @java.lang.Override
     public java.lang.String toString() {
-        return "Teacher{" +
+        return "Classroom{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
