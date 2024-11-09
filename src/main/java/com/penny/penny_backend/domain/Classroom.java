@@ -8,11 +8,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+//@Data -  @toString + @getter + @setter + @RequiredArgsConstructor + @EqualsAndHashCode 생성
 @Entity
 public class Classroom {
 
     @Id
+    @GeneratedValue(stragetegy = GenerationType.IDENTITY) //자동생성
     private Long id;
+
+
     private String name;
     private String username;
     private String password;

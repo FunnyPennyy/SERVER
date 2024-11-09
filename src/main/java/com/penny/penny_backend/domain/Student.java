@@ -9,7 +9,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 public class Teacher{
+    @Id
+    @GeneratedValue(stragetegy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String password;

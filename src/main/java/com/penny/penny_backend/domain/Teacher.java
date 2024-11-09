@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Teacher{
     @Id
+    @GeneratedValue(stragetegy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;

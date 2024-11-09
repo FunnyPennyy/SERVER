@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class School {
 
     @Id
+    @GeneratedValue(stragetegy = GenerationType.IDENTITY)
     private Long id;
 
 

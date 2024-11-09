@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 public class Job {
-    @ID
+    @Id
+    @GeneratedValue(stragetegy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
