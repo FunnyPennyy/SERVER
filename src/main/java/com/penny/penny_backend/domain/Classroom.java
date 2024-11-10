@@ -8,13 +8,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+//@Data -  @toString + @getter + @setter + @RequiredArgsConstructor + @EqualsAndHashCode 생성
 @Entity
-public class Teacher{
+public class Classroom {
+
     @Id
-    @GeneratedValue(stragetegy = GenerationType.IDENTITY)
+    @GeneratedValue(stragetegy = GenerationType.IDENTITY) //자동생성
     private Long id;
 
+
     private String name;
+    private String username;
     private String password;
 
     public Long getId() {
@@ -33,6 +37,14 @@ public class Teacher{
         this.name = name;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -43,9 +55,10 @@ public class Teacher{
 
     @java.lang.Override
     public java.lang.String toString() {
-        return "Teacher{" +
+        return "Classroom{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
