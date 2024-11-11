@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
-@Table(name = "TAX")
 @AllArgsConstructor
 public class Tax {
 
