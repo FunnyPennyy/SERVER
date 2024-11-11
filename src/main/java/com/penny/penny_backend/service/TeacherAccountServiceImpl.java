@@ -105,4 +105,9 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
         teacherAccountHistoryRepository.save(teacherAccountHistory);
         teacherAccountRepository.save(teacherAccount);
     }
+
+    @Override
+    public boolean isTeacherAccount(String accountNum) {
+        return teacherAccountRepository.findByAccountNum(accountNum).isPresent();
+    }
 }

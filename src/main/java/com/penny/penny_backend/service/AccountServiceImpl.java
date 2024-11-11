@@ -107,6 +107,11 @@ public class AccountServiceImpl implements AccountService{
         teacherAccountService.receiveFromStudent(toAccount, fromAccount, amount);
     }
 
+    @Override
+    public boolean isStudentAccount(String accountNum) {
+        return accountRepository.findByAccountNum(accountNum).isPresent();
+    }
+
     private void addAccountHistory(Account account, String content, int amount, boolean inOrOut, Long counterpartyId) {
         AccountHistory accountHistory = new AccountHistory(content, amount, inOrOut, counterpartyId, account);
 //        account.addAccountHistory(accountHistory);

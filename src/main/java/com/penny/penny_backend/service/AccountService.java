@@ -21,4 +21,6 @@ public interface AccountService {
 
     // 선생님한테 계좌 이체
     void transferToTeacher(String fromAccountNum, String toAccountNum, int amount);
+
+    boolean isStudentAccount(String accountNum);
 }

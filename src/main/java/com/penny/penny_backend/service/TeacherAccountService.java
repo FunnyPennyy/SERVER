@@ -22,6 +22,5 @@ public interface TeacherAccountService {
 
     void receiveFromStudent(TeacherAccount teacherAccount, Account studentAccount, int amount);
 
-    // 계좌 이체 (변경 사항 저장)
-//    void transfer(Long fromAccountId, Long toAccountId, int amount);
+    boolean isTeacherAccount(String accountNum);
 }
