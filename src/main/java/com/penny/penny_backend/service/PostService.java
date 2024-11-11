@@ -37,7 +37,7 @@ public class PostService {
     // 게시글 수정
     public Post update(Long id, UpdatePostRequest request) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalArguementException("not found: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
         post.update(request.getTitle(), request.getContent());
 
