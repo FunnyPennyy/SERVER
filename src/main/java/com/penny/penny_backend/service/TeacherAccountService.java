@@ -1,5 +1,6 @@
 package com.penny.penny_backend.service;
 
+import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.domain.TeacherAccount;
 import com.penny.penny_backend.domain.TeacherAccountHistory;
 
@@ -18,6 +19,8 @@ public interface TeacherAccountService {
 
     // 학생들 월급 지급
     void paySalaryToStudents(Long teacherId);
+
+    void receiveFromStudent(TeacherAccount teacherAccount, Account studentAccount, int amount);
 
     // 계좌 이체 (변경 사항 저장)
 //    void transfer(Long fromAccountId, Long toAccountId, int amount);

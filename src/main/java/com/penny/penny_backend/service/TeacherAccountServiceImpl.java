@@ -7,6 +7,7 @@ import com.penny.penny_backend.domain.TeacherAccountHistory;
 import com.penny.penny_backend.repository.AccountRepository;
 import com.penny.penny_backend.repository.TeacherAccountHistoryRepository;
 import com.penny.penny_backend.repository.TeacherAccountRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,17 +21,20 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
     private final StudentRepository studentRepository;
     private final AccountRepository accountRepository;
     private final TeacherAccountRepository teacherAccountRepository;
+    private final TeacherAccountHistoryRepository teacherAccountHistoryRepository;
     private final JobRepository jobRepository;
 
     public TeacherAccountServiceImpl(TeacherRepository teacherRepository,
                                      StudentRepository studentRepository,
                                      AccountRepository accountRepository,
                                      TeacherAccountRepository teacherAccountRepository,
+                                     TeacherAccountHistoryRepository teacherAccountHistoryRepository,
                                      JobRepository jobRepository) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.accountRepository = accountRepository;
         this.teacherAccountRepository = teacherAccountRepository;
+        this.teacherAccountHistoryRepository = teacherAccountHistoryRepository;
         this.jobRepository = jobRepository;
     }
 
@@ -57,6 +61,7 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
     }
 
     @Override
+    @Transactional
     public void paySalaryToStudents(Long teacherId) {
         // 1. teacherId를 사용하여 학급 ID(classId) 찾기
         Teacher teacher = teacherRepository.findById(teacherId)
@@ -83,5 +88,21 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
             // 변경된 계좌 정보를 저장
             accountRepository.save(account);
         }
+    }
+
+    @Override
+    @Transactional
+    public void receiveFromStudent(TeacherAccount teacherAccount, Account studentAccount, int amount) {
+        // 선생님 계좌 조회
+//        TeacherAccount teacherAccount = teacherAccountRepository.findById(teacherAccountId)
+//                .orElseThrow(() -> new IllegalArgumentException("선생님 계좌가 존재하지 않습니다."));
+
+        // 선생님 계좌 잔액 업데이트 및 계좌 내역 추가
+        teacherAccount.setAmount(teacherAccount.getAmount() + amount);
+        TeacherAccountHistory teacherAccountHistory = new TeacherAccountHistory(
+                "입금", amount, false, studentAccount.getStudentId(), teacherAccount);
+//        teacherAccount.addTeacherAccountHistory(teacherAccountHistory);
+        teacherAccountHistoryRepository.save(teacherAccountHistory);
+        teacherAccountRepository.save(teacherAccount);
     }
 }

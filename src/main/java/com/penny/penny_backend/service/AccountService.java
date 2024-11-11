@@ -16,6 +16,9 @@ public interface AccountService {
     // 개인 통장 사용 내역 조회 (계좌 사용 내역 - 입출금)
     List<AccountHistory> getAccountHistoryByStudentId(Long studentId);
 
-    // 계좌 이체 (변경 사항 저장)
-    void transfer(Long fromAccountId, Long toAccountId, int amount);
+    // 계좌 이체 (변경 사항 저장) + 계좌 내역 추가
+    void transferToStudent(String fromAccountNum, String toAccountNum, int amount);
+
+    // 선생님한테 계좌 이체
+    void transferToTeacher(String fromAccountNum, String toAccountNum, int amount);
 }
