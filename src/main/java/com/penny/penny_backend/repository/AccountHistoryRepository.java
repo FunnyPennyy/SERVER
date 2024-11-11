@@ -1,9 +1,7 @@
-package com.penny.penny_backend.account.repository;
+package com.penny.penny_backend.repository;
 
-import com.penny.penny_backend.account.entity.AccountHistory;
+import com.penny.penny_backend.domain.AccountHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 public interface AccountHistoryRepository extends JpaRepository<AccountHistory, Long> {
     // 필요 없을 수도?
