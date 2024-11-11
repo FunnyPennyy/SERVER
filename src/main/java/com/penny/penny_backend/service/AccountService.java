@@ -1,7 +1,7 @@
-package com.penny.penny_backend.account.service;
+package com.penny.penny_backend.service;
 
-import com.penny.penny_backend.account.entity.Account;
-import com.penny.penny_backend.account.entity.AccountHistory;
+import com.penny.penny_backend.domain.Account;
+import com.penny.penny_backend.domain.AccountHistory;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,12 +1,12 @@
-package com.penny.penny_backend.account.service;
+package com.penny.penny_backend.service;
 
-import com.penny.penny_backend.account.entity.Account;
-import com.penny.penny_backend.account.entity.AccountHistory;
-import com.penny.penny_backend.account.entity.TeacherAccount;
-import com.penny.penny_backend.account.entity.TeacherAccountHistory;
-import com.penny.penny_backend.account.repository.AccountRepository;
-import com.penny.penny_backend.account.repository.TeacherAccountHistoryRepository;
-import com.penny.penny_backend.account.repository.TeacherAccountRepository;
+import com.penny.penny_backend.domain.Account;
+import com.penny.penny_backend.domain.AccountHistory;
+import com.penny.penny_backend.domain.TeacherAccount;
+import com.penny.penny_backend.domain.TeacherAccountHistory;
+import com.penny.penny_backend.repository.AccountRepository;
+import com.penny.penny_backend.repository.TeacherAccountHistoryRepository;
+import com.penny.penny_backend.repository.TeacherAccountRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
