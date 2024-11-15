@@ -104,7 +104,7 @@ public class AccountServiceImpl implements AccountService{
         accountRepository.save(fromAccount);
 
         // 선생님 계좌 업데이트와 계좌 내역 생성은 TeacherAccountService에 위임
-        teacherAccountService.receiveFromStudent(toAccount, fromAccount, amount);
+//        teacherAccountService.receiveFromStudent(toAccount, fromAccount, amount);
     }
 
     @Override
