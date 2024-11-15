@@ -10,48 +10,36 @@ import lombok.NoArgsConstructor;
 
 //@Data -  @toString + @getter + @setter + @RequiredArgsConstructor + @EqualsAndHashCode 생성
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "classroom")
 public class Classroom {
 
     @Id
     @GeneratedValue(stragetegy = GenerationType.IDENTITY) //자동생성
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "school_id", nullable = false)
+    private School school;
 
-    private String name;
-    private String username;
-    private String password;
+    @Column(nullable = false)
+    private int grade;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(nullable = false)
+    private int classnum;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(nullable = false)
+    private int year;
 
-    public String getName() {
-        return name;
-    }
+    @Column(nullable = false, unique = true)
+    private int uuid;
+    // 형식 협의 필요
+    //private String uniqueCode = UUID.randomUUID().toString();
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     @java.lang.Override
     public java.lang.String toString() {
