@@ -1,8 +1,10 @@
 
-package penny.penny_backend.domain;
+package com.penny.penny_backend.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +12,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-public class Teacher{
+public class School{
     @Id
-    @GeneratedValue(stragetegy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String password;
