@@ -2,6 +2,7 @@ package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.domain.AccountHistory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;

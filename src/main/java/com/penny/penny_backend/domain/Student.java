@@ -1,10 +1,12 @@
 
 package com.penny.penny_backend.domain;
 
+
 import jakarta.persistence.*;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +14,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+
+
 public class School{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String password;
-    private Classroom classroom;
+//    private Classroom classroom;
 
     public Long getId() {
         return id;
@@ -44,23 +49,23 @@ public class School{
         this.password = password;
     }
 
-    public Classroom getClassroom() {
-        return classroom;
-    }
-
-    public void setClassroom(Classroom classroom) {
-        this.classroom = classroom;
-    }
-
-    @java.lang.Override
-    public java.lang.String toString() {
-        return "Teacher{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", classroom=" + classroom +
-                '}';
-    }
+//    public Classroom getClassroom() {
+//        return classroom;
+//    }
+//
+//    public void setClassroom(Classroom classroom) {
+//        this.classroom = classroom;
+//    }
+//
+//    @java.lang.Override
+//    public java.lang.String toString() {
+//        return "Teacher{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", password='" + password + '\'' +
+//                ", classroom=" + classroom +
+//                '}';
+//    }
 
 
 }

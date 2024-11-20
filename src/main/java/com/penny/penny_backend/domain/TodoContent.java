@@ -27,8 +27,8 @@ public class TodoContent {
     @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 
-    public TodoContent(Long contentId, String content, boolean check, Todo todo) {
-        this.contentId = contentId;
+    public TodoContent(String content, boolean check, Todo todo) {
+//        this.contentId = contentId;
         this.content = content;
         this.check = check;
         setTodo(todo);

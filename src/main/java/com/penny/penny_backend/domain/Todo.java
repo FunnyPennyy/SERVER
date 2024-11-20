@@ -28,8 +28,8 @@ public class Todo {
     @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TodoContent> todoContents = new ArrayList<>();
 
-    public Todo(Long todoId, LocalDate date, Long studentId) {
-        this.todoId = todoId;
+    public Todo(Long studentId) {
+//        this.todoId = todoId;
         this.date = LocalDate.now();
         this.studentId = studentId;
     }
