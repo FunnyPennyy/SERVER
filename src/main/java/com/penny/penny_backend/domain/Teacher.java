@@ -2,6 +2,8 @@ package com.penny.penny_backend.domain;
 
 import jakarta.persistence.*;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

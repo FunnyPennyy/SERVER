@@ -1,3 +1,4 @@
+
 //package com.penny.penny_backend.domain;
 //
 //import jakarta.persistence.*;

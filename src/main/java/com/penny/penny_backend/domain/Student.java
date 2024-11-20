@@ -1,8 +1,12 @@
 
 package com.penny.penny_backend.domain;
 
+
 import jakarta.persistence.*;
-//import com.penny.penny_backend.domain.Classroom;
+
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+
 import lombok.Data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +14,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-public class Student{
+
+
+public class School{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,7 +1,7 @@
-
 package penny.penny_backend.domain;
 
 import jakarta.persistence.*;
+
 
 import lombok.Data;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-public class School {
+public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
