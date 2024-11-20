@@ -1,13 +1,10 @@
 import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.repository.AccountRepository;
-import com.penny.penny_backend.service.AccountServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
