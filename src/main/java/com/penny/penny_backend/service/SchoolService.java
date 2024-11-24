@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class SchoolService {
 
-    private SchoolRepository schoolRepository;
+    private final SchoolRepository schoolRepository;
 
     public School save(CreateSchoolRequest request){
         return schoolRepository.save(request.toEntity());
