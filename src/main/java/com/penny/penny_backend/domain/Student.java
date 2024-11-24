@@ -13,9 +13,9 @@ public class Student {
     private Long studentId;
     private String studentName;
     private Integer credit;
-//
-//    @ManyToOne
-//    private Classroom classroom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Classroom classroom;
 
 
 }

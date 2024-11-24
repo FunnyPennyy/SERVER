@@ -14,7 +14,7 @@ public class Classroom {
     private Integer classNum;
     private Integer year;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private School school;
 
 }

@@ -12,7 +12,8 @@ public class Teacher {
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long teacherId;
     private String teacherName;
-//    @ManyToOne
-//    private Classroom classroom;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Classroom classroom;
 
 }
