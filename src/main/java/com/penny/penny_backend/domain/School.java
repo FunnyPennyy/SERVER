@@ -10,14 +10,33 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class School {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long schoolId;
 
-    @Column(name = "school_name", nullable = false)
+
+
+    @Column(name = "name", nullable = false)
     private String schoolName;
-    @Column(name = "school_address", nullable = false)
+
+    @Column(name = "address", nullable = false)
     private String schoolAddress;
+
+
+    public String getSchoolName() {
+        return schoolName;
+    }
+    public String getSchoolAddress() {
+        return schoolAddress;
+    }
+
+    @Builder
+    public School(String name, String address){
+        this.schoolName = name;
+        this.schoolAddress = address;
+    }
+
+
+
 }
