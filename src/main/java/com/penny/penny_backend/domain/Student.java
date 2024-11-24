@@ -5,8 +5,14 @@ import lombok.*;
 
 import com.penny.penny_backend.domain.Classroom;
 
-@Data
+
 @Entity
+@Table(name = "student")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Student {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)

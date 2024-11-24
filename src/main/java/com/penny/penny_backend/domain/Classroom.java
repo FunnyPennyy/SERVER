@@ -4,8 +4,14 @@ import jakarta.persistence.*;
 import lombok.*;
 import com.penny.penny_backend.domain.School;
 
-@Data
+
 @Entity
+@Table(name = "classroom")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Classroom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
