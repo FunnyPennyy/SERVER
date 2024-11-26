@@ -19,7 +19,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;  // 게시글 ID
     private String title;  // 게시글 제목
-    private String author;  // 게시글 작성자 = 다 선생님 아닌가?
+    private String author;  // 게시글 작성자 = 다 선생님 아닌가?  +후에 fk로 변경
     private String content;  // 게시글 내용
 
     @CreationTimestamp

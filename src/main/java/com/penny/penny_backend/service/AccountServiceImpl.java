@@ -1,11 +1,10 @@
+/*
 package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.domain.AccountHistory;
-import com.penny.penny_backend.domain.TeacherAccount;
 import com.penny.penny_backend.repository.AccountHistoryRepository;
 import com.penny.penny_backend.repository.AccountRepository;
-import com.penny.penny_backend.repository.TeacherAccountRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -14,35 +13,35 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class AccountServiceImpl implements AccountService{
-    private final AccountRepository accountRepository;
-    private final AccountHistoryRepository accountHistoryRepository;
-    private final TeacherAccountService teacherAccountService;
-    private final TeacherAccountRepository teacherAccountRepository;
+//public class AccountServiceImpl implements AccountService{
+    //private final AccountRepository accountRepository;
+    //private final AccountHistoryRepository accountHistoryRepository;
+    //private final TeacherAccountService teacherAccountService;
+    //private final TeacherAccountRepository teacherAccountRepository;
 
-    public AccountServiceImpl(AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository,
+    /*public AccountServiceImpl(AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository,
                               TeacherAccountService teacherAccountService, TeacherAccountRepository teacherAccountRepository) {
         this.accountRepository = accountRepository;
         this.accountHistoryRepository = accountHistoryRepository;
         this.teacherAccountService = teacherAccountService;
         this.teacherAccountRepository = teacherAccountRepository;
-    }
+    }*/
 
-    @Override
-    public Account createAccount(Long studentId, String nickname, int initialAmount, String accountNum) {
+    //@Override
+    /*public Account createAccount(Long studentId, String nickname, int initialAmount, String accountNum) {
         // 비즈니스 로직: 통장 생성 전 유효성 검사 또는 기타 작업
         // initialAmount 몇으로 설정? 일단 0으로
         // 이미 계좌가 존재하는지 확인
-        if (accountRepository.findById(studentId).isPresent()) {
+        //if (accountRepository.findById(studentId).isPresent()) {
             throw new IllegalArgumentException("해당 학생은 이미 계좌를 가지고 있습니다.");
         }
 
-        Account account = new Account(studentId, nickname, 0, accountNum);
-        return accountRepository.save(account);
+        //Account account = new Account(studentId, nickname, 0, accountNum);
+        //return accountRepository.save(account);
     }
 
-    @Override
-    public Optional<Account> getAccountByStudentId(Long studentId) {
+    //@Override
+    /*public Optional<Account> getAccountByStudentId(Long studentId) {
         return accountRepository.findById(studentId);
     }
 
@@ -117,4 +116,4 @@ public class AccountServiceImpl implements AccountService{
 //        account.addAccountHistory(accountHistory);
         accountHistoryRepository.save(accountHistory);
     }
-}
+}*/
