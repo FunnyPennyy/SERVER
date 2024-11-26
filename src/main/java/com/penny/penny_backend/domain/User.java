@@ -3,6 +3,12 @@ package com.penny.penny_backend.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Table(name="users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -10,7 +16,6 @@ import lombok.*;
 @Setter
 @Entity
 public class User{
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id", updatable = false)
@@ -28,8 +33,10 @@ public class User{
 
 
     @Builder
-    public User(String username, String password, String auth){
+    public User(String username, String password, String role){
         this.username=username;
         this.password=password;
+        this.role = role;
     }
+
 }
