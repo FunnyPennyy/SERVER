@@ -1,11 +1,12 @@
 package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.Post;
+import com.penny.penny_backend.domain.Teacher;
 import com.penny.penny_backend.dto.CreatePostRequest;
 import com.penny.penny_backend.dto.UpdatePostRequest;
 import com.penny.penny_backend.repository.PostRepository;
+import com.penny.penny_backend.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,21 @@ import java.util.List;
 @Service
 public class PostService {
 
-    @Autowired
     private final PostRepository postRepository;
+    private final TeacherRepository teacherRepository;
 
     // 게시글 생성
     public Post createPost(CreatePostRequest request) {
-        return postRepository.save(request.toEntity());
+        Teacher author = teacherRepository.findById(request.getAuthorId())
+                .orElseThrow(() -> new IllegalArgumentException("Teacher not found"));
+
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .author(author)
+                .build();
+
+        return postRepository.save(post);
     }
 
     // 게시글 단일 조회
@@ -41,7 +51,7 @@ public class PostService {
 
         post.update(request.getTitle(), request.getContent());
 
-        return post;
+        return postRepository.save(post);
     }
 
     // 게시글 삭제

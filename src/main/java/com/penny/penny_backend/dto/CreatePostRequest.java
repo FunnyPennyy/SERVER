@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.penny.penny_backend.domain.Post;
+import com.penny.penny_backend.domain.Teacher;
 
 import java.time.LocalDateTime;
 
@@ -11,18 +12,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class CreatePostRequest {
-    private Long id;
     private String title;
     private String content;
-    private String author;
-    private LocalDateTime createdAt; // 게시글 생성일자
+    private Long authorId; // 작성자 (Teacher ID)
 
-    public Post toEntity() {
+    public Post toEntity(Teacher author) {
         return Post.builder()
-                .id(id)
                 .title(title)
                 .content(content)
-                .createdAt(createdAt)
                 .author(author)
                 .build();
     }

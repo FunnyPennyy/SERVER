@@ -21,7 +21,7 @@ public class PostResponse {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.author = post.getAuthor();
+        this.author = post.getAuthor().getTeacherName();
         this.createdAt = post.getCreatedAt();
     }
 }
