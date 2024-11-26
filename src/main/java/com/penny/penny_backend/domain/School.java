@@ -1,52 +1,42 @@
-package penny.penny_backend.domain;
+package com.penny.penny_backend.domain;
 
 import jakarta.persistence.*;
+import lombok.*;
 
-
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
-public class Student {
-
+@Table(name = "school")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class School {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long schoolId;
 
 
-    private String name;
-    private String location;
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "name", nullable = false)
+    private String schoolName;
 
-    public String getName() {
-        return name;
+    @Column(name = "address", nullable = false)
+    private String schoolAddress;
+
+
+    public String getSchoolName() {
+        return schoolName;
     }
-    public void setName(String name) {
-        this.name = name;
+    public String getSchoolAddress() {
+        return schoolAddress;
     }
 
-    public String getLocation() {
-        return location;
-    }
-    public void setLocation(String location) {
-        this.location = location;
+    @Builder
+    public School(String name, String address){
+        this.schoolName = name;
+        this.schoolAddress = address;
     }
 
-    @java.lang.Override
-    public java.lang.String toString() {
-        return "School{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                '}';
-    }
+
+
 }

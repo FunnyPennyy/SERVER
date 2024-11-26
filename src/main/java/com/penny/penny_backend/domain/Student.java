@@ -1,71 +1,27 @@
-
 package com.penny.penny_backend.domain;
 
-
 import jakarta.persistence.*;
+import lombok.*;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import com.penny.penny_backend.domain.Classroom;
 
-import lombok.Data;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
-
-
-public class School{
-
+@Table(name = "student")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String password;
-//    private Classroom classroom;
+    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    private Long studentId;
+    private String studentName;
+    private Integer credit;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-//    public Classroom getClassroom() {
-//        return classroom;
-//    }
-//
-//    public void setClassroom(Classroom classroom) {
-//        this.classroom = classroom;
-//    }
-//
-//    @java.lang.Override
-//    public java.lang.String toString() {
-//        return "Teacher{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", password='" + password + '\'' +
-//                ", classroom=" + classroom +
-//                '}';
-//    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Classroom classroom;
 
 
 }
