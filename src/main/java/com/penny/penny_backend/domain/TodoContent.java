@@ -23,12 +23,11 @@ public class TodoContent {
     private String content;
     private boolean check;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 
     public TodoContent(String content, boolean check, Todo todo) {
-//        this.contentId = contentId;
         this.content = content;
         this.check = check;
         setTodo(todo);

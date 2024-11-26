@@ -29,7 +29,6 @@ public class Todo {
     private List<TodoContent> todoContents = new ArrayList<>();
 
     public Todo(Long studentId) {
-//        this.todoId = todoId;
         this.date = LocalDate.now();
         this.studentId = studentId;
     }

@@ -22,18 +22,24 @@ public class AccountHistory {
     private int amount;
     private boolean inOrOut; // 입금일 경우 false, 송금일 경우 true
     private LocalDateTime datetime;
-    private Long sentUserId;
+    private Long counterpartyId;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private Account account;
 
-    public AccountHistory(String content, int amount, boolean inOrOut, Long sentUserId, Account account) {
+    private String myName;
+    private String counterpartyName;
+
+    public AccountHistory(String content, int amount, boolean inOrOut, Long counterpartyId,
+                          String myName, String counterpartyName, Account account) {
         this.content = content;
         this.amount = amount;
         this.inOrOut = inOrOut;
         this.datetime = LocalDateTime.now();
-        this.sentUserId = sentUserId;
+        this.counterpartyId = counterpartyId;
+        this.myName = myName;
+        this.counterpartyName = counterpartyName;
         setAccount(account);
     }
 

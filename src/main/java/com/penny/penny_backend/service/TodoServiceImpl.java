@@ -1,18 +1,15 @@
 package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.Job;
-import com.penny.penny_backend.domain.Student;
 import com.penny.penny_backend.domain.Todo;
 import com.penny.penny_backend.domain.TodoContent;
 import com.penny.penny_backend.repository.JobRepository;
-import com.penny.penny_backend.repository.StudentRepository;
 import com.penny.penny_backend.repository.TodoContentRepository;
 import com.penny.penny_backend.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TodoServiceImpl implements TodoService {
@@ -31,49 +28,74 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public List<String> createDefaultTodoList(Job job, Student student) {
-//        Optional<Job> jobOptional = jobRepository.findById(job.getJobId());
-//        Optional<Student> student = studentRepository.fin
-//        if (jobOptional.isPresent()) {
-        List<String> defaultTodos = new ArrayList<>(job.getTodoList());
+    public List<TodoContent> createDefaultTodoList(Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 Student ID를 가진 학생이 존재하지 않습니다."));
+        Job job = jobRepository.findById(student.getJobId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 Job ID를 가진 Job이 존재하지 않습니다."));
+
         Todo todo = new Todo(student.getId());
         todoRepository.save(todo);
 
-        for (String todoContent : defaultTodos) {
-            TodoContent content = new TodoContent(todoContent, false, todo);
-            todoContentRepository.save(content);
-//            todo.getTodoContents().add(content);
+        // 기본 todo 리스트로 TodoContent 생성 및 저장
+        for (String todoContent : job.getTodoList()) {
+            TodoContent content = new TodoContent(todoContent, false, todo); // 생성
+            todoContentRepository.save(content); // 저장
         }
-        todoRepository.save(todo);
-        return defaultTodos;
-//        }
-//        return new ArrayList<>();
+
+        return todo.getTodoContents();
     }
 
     @Override
-    public void updateTodo(Todo todo, int index, String newTodo) {
-        List<TodoContent> todoContents = todo.getTodoContents();
-        if (index >= 0 && index < todoContents.size()) {
-            TodoContent content = todoContents.get(index);
-            content.setContent(newTodo);
-            todoContentRepository.save(content);
+    public void updateTodoContent(Long contentId, String newContent) {
+        if (newContent == null || newContent.isEmpty()) {
+            throw new IllegalArgumentException("새로운 내용은 비어있을 수 없습니다.");
         }
+
+        TodoContent todoContent = todoContentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 TodoContent를 찾을 수 없습니다."));
+
+        todoContent.setContent(newContent);
+        todoContentRepository.save(todoContent);
     }
 
     @Override
-    public void deleteTodo(Todo todo, int index) {
-        List<TodoContent> todoContents = todo.getTodoContents();
-        if (index >= 0 && index < todoContents.size()) {
-            TodoContent content = todoContents.get(index);
-            todoContents.remove(index);
-            todoContentRepository.delete(content);
-        }
+    public void updateTodoStatus(Long contentId, Boolean newStatus) {
+        TodoContent todoContent = todoContentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 TodoContent를 찾을 수 없습니다."));
+
+        todoContent.setCheck(newStatus);
+        todoContentRepository.save(todoContent);
     }
 
     @Override
-    public void addTodo(Todo todo, String newTodo) {
-        TodoContent content = new TodoContent(newTodo, false, todo);
-        todo.getTodoContents().add(content);
+    public void deleteTodo(Long contentId) {
+        TodoContent todoContent = todoContentRepository.findById(contentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 TodoContent를 찾을 수 없습니다."));
+
+        todoContent.getTodo().getTodoContents().remove(todoContent);
+    }
+
+    @Override
+    public void addTodo(Long todoId, String newContent, boolean check) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new IllegalArgumentException("todo가 존재하지 않습니다."));
+
+        if (newContent == null || newContent.isEmpty()) {
+            throw new IllegalArgumentException("새로운 내용은 비어있을 수 없습니다.");
+        }
+
+        TodoContent content = new TodoContent(newContent, check, todo);
         todoContentRepository.save(content);
+    }
+
+    @Override
+    public List<TodoContent> getTodoContentsByStudentIdAndDate(Long studentId, LocalDate date) {
+        // 특정 학생 ID와 날짜로 Todo 조회
+        Todo todo = todoRepository.findByStudentIdAndDate(studentId, date)
+                .orElseThrow(() -> new IllegalArgumentException("해당 학생과 날짜에 대한 Todo가 없습니다."));
+
+        // Todo와 연결된 TodoContents 반환
+        return todo.getTodoContents();
     }
 }

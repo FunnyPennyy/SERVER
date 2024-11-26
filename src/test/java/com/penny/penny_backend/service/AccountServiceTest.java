@@ -42,7 +42,7 @@ class AccountServiceTest {
         when(accountRepository.save(any(Account.class))).thenReturn(account);
 
         // then: createAccount 메서드를 호출하여 결과 확인
-        Account createdAccount = accountService.createAccount(studentId, nickname, initialAmount, accountNum);
+        Account createdAccount = accountService.createAccount(studentId, nickname);
 
         // 검증
         assertEquals(studentId, createdAccount.getStudentId());

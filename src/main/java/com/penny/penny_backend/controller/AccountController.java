@@ -2,7 +2,11 @@ package com.penny.penny_backend.controller;
 
 import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.domain.AccountHistory;
+import com.penny.penny_backend.dto.AccountDTO;
+import com.penny.penny_backend.dto.AccountHistoryDTO;
+import com.penny.penny_backend.dto.TransferRequestDTO;
 import com.penny.penny_backend.service.AccountService;
+import com.penny.penny_backend.service.TeacherAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,22 +20,21 @@ import java.util.Optional;
 public class AccountController {
 
     private final AccountService accountService;
+    private final TeacherAccountService teacherAccountService;
 
     @Autowired
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, TeacherAccountService teacherAccountService) {
         this.accountService = accountService;
+        this.teacherAccountService = teacherAccountService;
     }
 
     // 계좌 생성
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Account> createAccount(@RequestBody Long studentId,
-                                                 @RequestBody String nickname,
-                                                 @RequestBody int initialAmount,
-                                                 @RequestBody String accountNum) {
-        System.out.println("studentId = " + studentId);
+                                                 @RequestBody String nickname) {
         try {
             System.out.println("studentId = " + studentId);
-            Account account = accountService.createAccount(studentId, nickname, initialAmount, accountNum);
+            Account account = accountService.createAccount(studentId, nickname);
             System.out.println("accout_created\n");
             return new ResponseEntity<>(account, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
@@ -41,49 +44,64 @@ public class AccountController {
 
     // 계좌 조회
     @GetMapping("/{studentId}")
-    public ResponseEntity<Account> getAccountByStudentId(@PathVariable Long studentId) {
+    public ResponseEntity<AccountDTO> getAccountByStudentId(@PathVariable Long studentId) {
         Optional<Account> account = accountService.getAccountByStudentId(studentId);
-        return account.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return account.map(value -> {
+            // 엔티티를 DTO로 변환
+            AccountDTO accountDTO = new AccountDTO(
+                    value.getStudentId(),
+                    value.getNickname(),
+                    value.getAmount()
+            );
+            return new ResponseEntity<>(accountDTO, HttpStatus.OK);
+        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     // 계좌 사용 내역 조회
     @GetMapping("/{studentId}/history")
-    public ResponseEntity<List<AccountHistory>> getAccountHistoryByStudentId(@PathVariable Long studentId) {
-        List<AccountHistory> history = accountService.getAccountHistoryByStudentId(studentId);
-        return new ResponseEntity<>(history, HttpStatus.OK);
+    public ResponseEntity<List<AccountHistoryDTO>> getAccountHistoryByStudentId(@PathVariable Long studentId) {
+        List<AccountHistory> historyList = accountService.getAccountHistoryByStudentId(studentId);
+
+        // 엔티티 리스트를 DTO 리스트로 변환
+        List<AccountHistoryDTO> historyDTOList = historyList.stream()
+                .map(history -> new AccountHistoryDTO(
+                        history.getContent(),
+                        history.getAmount(),
+                        history.isInOrOut(),
+                        history.getDatetime()
+                )).toList();
+
+        return new ResponseEntity<>(historyDTOList, HttpStatus.OK);
     }
 
-    // 학생 간 이체
-    @PostMapping("/transfer/student")
-    public ResponseEntity<String> transferToStudent(@RequestParam String fromAccountNum,
-                                                    @RequestParam String toAccountNum,
-                                                    @RequestParam int amount) {
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transfer(@RequestBody TransferRequestDTO transferRequestDTO) {
         try {
-            accountService.transferToStudent(fromAccountNum, toAccountNum, amount);
-            return new ResponseEntity<>("Transfer to student successful", HttpStatus.OK);
+            String fromAccountNum = transferRequestDTO.getFromAccountNum();
+            String toAccountNum = transferRequestDTO.getToAccountNum();
+            int amount = transferRequestDTO.getAmount();
+
+            if (accountService.isStudentAccount(toAccountNum)) {
+                accountService.transferToStudent(fromAccountNum, toAccountNum, amount);
+                return new ResponseEntity<>("Transfer to student successful", HttpStatus.OK);
+            } else if (teacherAccountService.isTeacherAccount(toAccountNum)) {
+                accountService.transferToTeacher(fromAccountNum, toAccountNum, amount);
+                return new ResponseEntity<>("Transfer to teacher successful", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Recipient account not found", HttpStatus.NOT_FOUND);
+            }
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
-    // 학생이 선생님에게 이체
-    @PostMapping("/transfer/teacher")
-    public ResponseEntity<String> transferToTeacher(@RequestParam String fromAccountNum,
-                                                    @RequestParam String toAccountNum,
-                                                    @RequestParam int amount) {
+    @DeleteMapping("/{studentId}")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long studentId) {
         try {
-            accountService.transferToTeacher(fromAccountNum, toAccountNum, amount);
-            return new ResponseEntity<>("Transfer to teacher successful", HttpStatus.OK);
+            accountService.deleteAccount(studentId);
+            return new ResponseEntity<>("계좌가 삭제되었습니다.", HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
-
-//    // 계좌 유형 확인
-//    @GetMapping("/isStudentAccount")
-//    public ResponseEntity<Boolean> isStudentAccount(@RequestParam String accountNum) {
-//        boolean isStudentAccount = accountService.isStudentAccount(accountNum);
-//        return new ResponseEntity<>(isStudentAccount, HttpStatus.OK);
-//    }
 }

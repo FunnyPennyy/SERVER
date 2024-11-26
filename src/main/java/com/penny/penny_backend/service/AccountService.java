@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface AccountService {
     // 개인 통장 생성 (create) - 이미 생성자 있으니까 필요 없나?
-    Account createAccount(Long studentId, String nickname, int initialAmount, String accountNum);
+    Account createAccount(Long studentId, String nickname);
 
     // 개인 통장 조회
     Optional<Account> getAccountByStudentId(Long studentId);
@@ -22,6 +22,9 @@ public interface AccountService {
 
     // 선생님한테 계좌 이체
     void transferToTeacher(String fromAccountNum, String toAccountNum, int amount);
+
+    // 계좌 삭제
+    void deleteAccount(Long studentId);
 
     boolean isStudentAccount(String accountNum);
 }
