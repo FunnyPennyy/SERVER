@@ -28,7 +28,7 @@ public class TeacherAccountHistory {
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
     private TeacherAccount teacherAccount;
-
+//
     private String myName;
     private String counterpartyName;
 

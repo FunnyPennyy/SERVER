@@ -13,7 +13,7 @@ public class HomeworkServiceImpl implements HomeworkService {
         this.homeworkStatusRepository = homeworkStatusRepository;
         this.studentRepository = studentRepository;
     }
-
+//
     @Override
     public List<HomeworkStatus> getHomeworkStatusByClassId(Long classId) {
         // 학급 ID로 학생 ID들을 조회한 후, 해당 학생들의 숙제 상태 조회

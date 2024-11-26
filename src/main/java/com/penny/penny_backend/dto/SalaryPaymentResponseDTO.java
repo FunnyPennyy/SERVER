@@ -10,3 +10,4 @@ import lombok.NoArgsConstructor;
 public class SalaryPaymentResponseDTO {
     private String message; // 성공 또는 실패 메시지
 }
+//

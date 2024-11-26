@@ -12,3 +12,4 @@ public class AccountDTO {
     private String nickname; // 닉네임
     private int balance;     // 잔액
 }
+//

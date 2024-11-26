@@ -21,7 +21,7 @@ public interface TodoService {
 
     // 개별 투두 추가
     void addTodo(Long todoId, String newTodo, boolean check);
-
+//
     // 날짜로 조회
     List<TodoContent> getTodoContentsByStudentIdAndDate(Long studentId, LocalDate date);
 }

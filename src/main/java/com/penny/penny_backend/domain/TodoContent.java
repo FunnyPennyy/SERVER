@@ -32,7 +32,7 @@ public class TodoContent {
         this.check = check;
         setTodo(todo);
     }
-
+//
     public void setTodo(Todo todo) {
         this.todo = todo;
         if (todo != null && !todo.getTodoContents().contains(this)) {

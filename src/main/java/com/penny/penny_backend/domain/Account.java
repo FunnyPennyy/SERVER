@@ -27,7 +27,7 @@ public class Account {
     private List<AccountHistory> accountHistories = new ArrayList<>();
 
 //    @OneToOne(mappedBy = "")
-
+//
     // Constructor
     public Account(Long studentId, String nickname, int amount, String accountNum) {
         this.studentId = studentId;

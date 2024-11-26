@@ -19,7 +19,7 @@ public interface TeacherAccountService {
 
     // 학생들 월급 지급
     void paySalaryToStudents(Long teacherId);
-
+//
     void receiveFromStudent(TeacherAccount teacherAccount, Account studentAccount,
                             int amount, String teacherName, String studentName);
 

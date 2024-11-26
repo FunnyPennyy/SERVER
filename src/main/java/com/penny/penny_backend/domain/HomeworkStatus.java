@@ -24,7 +24,7 @@ public class HomeworkStatus {
     @ManyToOne
     @JoinColumn(name = "hw_id", nullable = false)
     private Homework homework;
-
+//
     public HomeworkStatus(Long statusId, boolean status, Long studentId, Homework homework) {
         this.statusId = statusId;
         this.status = status;

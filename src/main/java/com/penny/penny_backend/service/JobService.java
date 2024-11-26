@@ -8,3 +8,4 @@ public interface JobService {
     // 직업 목록 조회
     List<Job> getAllJobs();
 }
+//

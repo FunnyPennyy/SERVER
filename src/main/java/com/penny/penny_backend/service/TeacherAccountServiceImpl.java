@@ -88,7 +88,7 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
             accountRepository.save(account);
         }
     }
-
+//
     @Override
     @Transactional
     public void receiveFromStudent(TeacherAccount teacherAccount, Account studentAccount,

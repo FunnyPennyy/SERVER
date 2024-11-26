@@ -15,3 +15,4 @@ public class AccountHistoryDTO {
     private boolean inOrOut;    // 입금(true) / 출금(false)
     private LocalDateTime datetime; // 거래 날짜
 }
+//

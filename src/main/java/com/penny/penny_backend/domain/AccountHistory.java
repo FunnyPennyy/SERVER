@@ -27,7 +27,7 @@ public class AccountHistory {
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private Account account;
-
+//
     private String myName;
     private String counterpartyName;
 

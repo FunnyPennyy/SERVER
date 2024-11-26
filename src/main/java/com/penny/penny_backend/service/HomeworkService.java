@@ -11,3 +11,4 @@ public interface HomeworkService {
     // 숙제 상태 수정
     void updateHomeworkStatusByClassId(Long classId, Long homeworkId, boolean status);
 }
+//

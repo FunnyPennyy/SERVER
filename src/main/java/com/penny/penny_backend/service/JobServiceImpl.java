@@ -20,3 +20,4 @@ public class JobServiceImpl implements JobService {
         return jobRepository.findAll(); // 데이터베이스에서 모든 Job 엔티티를 조회
     }
 }
+//

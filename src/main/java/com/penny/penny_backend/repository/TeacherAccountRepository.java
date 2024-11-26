@@ -10,3 +10,4 @@ import java.util.Optional;
 public interface TeacherAccountRepository extends JpaRepository<TeacherAccount, Long> {
     Optional<TeacherAccount> findByAccountNum(String accountNum);
 }
+//

@@ -25,6 +25,6 @@ public interface AccountService {
 
     // 계좌 삭제
     void deleteAccount(Long studentId);
-
+//
     boolean isStudentAccount(String accountNum);
 }

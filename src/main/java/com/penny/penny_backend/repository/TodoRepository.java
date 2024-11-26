@@ -8,3 +8,4 @@ import java.util.Optional;
 public interface TodoRepository extends JpaRepository<Todo, Long> {
     Optional<Todo> findByStudentIdAndDate(Long studentId, LocalDate date);
 }
+//

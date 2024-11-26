@@ -22,7 +22,7 @@ public class TeacherAccount {
     private String nickname;
     private int amount;
     private String accountNum;
-
+//
     @OneToMany(mappedBy = "teacherAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeacherAccountHistory> teacherAccountHistories = new ArrayList<>();
 
