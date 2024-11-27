@@ -65,7 +65,7 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
         // 1. teacherId를 사용하여 학급 ID(classId) 찾기
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 teacherId를 가진 선생님이 없습니다."));
-        Long classId = teacher.getClassId();
+        Long classId = teacher.getClassroom().getClassroomId();
 
         // 2. 해당 classId를 가진 학생 목록 찾기
         List<Student> students = studentRepository.findByClassId(classId);

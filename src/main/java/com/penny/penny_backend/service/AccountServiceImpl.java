@@ -1,9 +1,7 @@
 package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.*;
-import com.penny.penny_backend.repository.AccountHistoryRepository;
-import com.penny.penny_backend.repository.AccountRepository;
-import com.penny.penny_backend.repository.TeacherAccountRepository;
+import com.penny.penny_backend.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +15,18 @@ public class AccountServiceImpl implements AccountService{
     private final AccountHistoryRepository accountHistoryRepository;
     private final TeacherAccountService teacherAccountService;
     private final TeacherAccountRepository teacherAccountRepository;
-//
+    private final StudentRepository studentRepository;
+    private final TeacherRepository teacherRepository;
+
     public AccountServiceImpl(AccountRepository accountRepository, AccountHistoryRepository accountHistoryRepository,
-                              TeacherAccountService teacherAccountService, TeacherAccountRepository teacherAccountRepository) {
+                              TeacherAccountService teacherAccountService, TeacherAccountRepository teacherAccountRepository,
+                              StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.accountRepository = accountRepository;
         this.accountHistoryRepository = accountHistoryRepository;
         this.teacherAccountService = teacherAccountService;
         this.teacherAccountRepository = teacherAccountRepository;
+        this.studentRepository = studentRepository;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
@@ -69,8 +72,10 @@ public class AccountServiceImpl implements AccountService{
         Account toAccount = accountRepository.findByAccountNum(toAccountNum)
                 .orElseThrow(() -> new IllegalArgumentException("수신자 계좌가 존재하지 않습니다."));
 
-        Student fromStudent = studentRepository.findById(fromAccount.getStudentId());
-        Student toStudent = studentRepository.findById(toAccount.getStudentId());
+        Student fromStudent = studentRepository.findById(fromAccount.getStudentId())
+                .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다."));
+        Student toStudent = studentRepository.findById(toAccount.getStudentId())
+                .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다."));
 
         // 잔액 확인 및 이체 처리
         if (fromAccount.getAmount() < amount) {
@@ -81,9 +86,11 @@ public class AccountServiceImpl implements AccountService{
         toAccount.setAmount(toAccount.getAmount() + amount);
 
         // 송금자 계좌 내역 추가
-        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getStudentId(), fromStudent.getName(), toStudent.getName());
+        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getStudentId(),
+                fromStudent.getStudentName(), toStudent.getStudentName());
         // 수신자 계좌 내역 추가
-        addAccountHistory(toAccount, "입금", amount, false, fromAccount.getStudentId(), toStudent.getName(), fromStudent.getName());
+        addAccountHistory(toAccount, "입금", amount, false, fromAccount.getStudentId(),
+                toStudent.getStudentName(), fromStudent.getStudentName());
 
         // 변경된 계좌와 내역 저장
         accountRepository.save(fromAccount);
@@ -99,8 +106,10 @@ public class AccountServiceImpl implements AccountService{
         TeacherAccount toAccount = teacherAccountRepository.findByAccountNum(toAccountNum)
                 .orElseThrow(() -> new IllegalArgumentException("선생님 계좌가 존재하지 않습니다."));
 
-        Student fromStudent = studentRepository.findById(fromAccount.getStudentId());
-        Teacher teacher = teacherRepository.findById(toAccount.getTeacherId());
+        Student fromStudent = studentRepository.findById(fromAccount.getStudentId())
+                .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다."));
+        Teacher teacher = teacherRepository.findById(toAccount.getTeacherId())
+                .orElseThrow(() -> new IllegalArgumentException("선생님이 존재하지 않습니다."));
 
         if (fromAccount.getAmount() < amount) {
             throw new IllegalArgumentException("잔액이 부족합니다.");
@@ -110,14 +119,16 @@ public class AccountServiceImpl implements AccountService{
         fromAccount.setAmount(fromAccount.getAmount() - amount);
 
         // 송금한 학생 계좌 내역 추가
-        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getTeacherId(), fromStudent.getName(), teacher.getName());
+        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getTeacherId(),
+                fromStudent.getStudentName(), teacher.getTeacherName());
         // 선생님 계좌 내역 추가
 //        teacherAccountService.addTeacherAccountHistory(toAccount, "입금", amount, false, fromAccount.getStudentId(), teacher.getName(), fromStudent.getName());
 
         accountRepository.save(fromAccount);
 
         // 선생님 계좌 업데이트와 계좌 내역 생성은 TeacherAccountService에 위임
-        teacherAccountService.receiveFromStudent(toAccount, fromAccount, amount, teacher.getName(), fromStudent.getName());
+        teacherAccountService.receiveFromStudent(toAccount, fromAccount, amount,
+                teacher.getTeacherName(), fromStudent.getStudentName());
     }
 
     @Override

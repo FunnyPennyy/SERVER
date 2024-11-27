@@ -2,6 +2,7 @@ package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.HomeworkStatus;
 import com.penny.penny_backend.repository.HomeworkStatusRepository;
+import com.penny.penny_backend.repository.StudentRepository;
 
 import java.util.List;
 

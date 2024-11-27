@@ -1,9 +1,11 @@
 package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.Job;
+import com.penny.penny_backend.domain.Student;
 import com.penny.penny_backend.domain.Todo;
 import com.penny.penny_backend.domain.TodoContent;
 import com.penny.penny_backend.repository.JobRepository;
+import com.penny.penny_backend.repository.StudentRepository;
 import com.penny.penny_backend.repository.TodoContentRepository;
 import com.penny.penny_backend.repository.TodoRepository;
 import org.springframework.stereotype.Service;
@@ -34,7 +36,7 @@ public class TodoServiceImpl implements TodoService {
         Job job = jobRepository.findById(student.getJobId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 Job ID를 가진 Job이 존재하지 않습니다."));
 
-        Todo todo = new Todo(student.getId());
+        Todo todo = new Todo(student.getStudentId());
         todoRepository.save(todo);
 
         // 기본 todo 리스트로 TodoContent 생성 및 저장
