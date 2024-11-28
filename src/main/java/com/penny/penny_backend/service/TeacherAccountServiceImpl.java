@@ -52,11 +52,12 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
 
     @Override
     public List<TeacherAccountHistory> getAccountHistoryByTeacherId(Long teacherId) {
-        // 특정 studentId와 accountId로 사용 내역을 조회
-        return teacherAccountRepository.findById(teacherId)
-                .map(TeacherAccount::getTeacherAccountHistories)
-                .orElse(Collections.emptyList());
-//        return accountHistoryRepository.findByAccount_StudentId(studentId);
+        // 계좌 존재 여부 확인
+        TeacherAccount teacherAccount = teacherAccountRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 Student ID의 계좌가 존재하지 않습니다."));
+
+        // 존재하는 경우, 계좌 사용 내역 반환
+        return teacherAccount.getTeacherAccountHistories();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
         Long classId = teacher.getClassroom().getClassroomId();
 
         // 2. 해당 classId를 가진 학생 목록 찾기
-        List<Student> students = studentRepository.findByClassId(classId);
+        List<Student> students = studentRepository.findByClassroom_ClassroomId(classId);
 
         // 3. 각 학생의 직업에 따른 월급을 지급
         for (Student student : students) {

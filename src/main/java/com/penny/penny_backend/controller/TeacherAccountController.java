@@ -3,9 +3,7 @@ package com.penny.penny_backend.controller;
 import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.domain.TeacherAccount;
 import com.penny.penny_backend.domain.TeacherAccountHistory;
-import com.penny.penny_backend.dto.SalaryPaymentResponseDTO;
-import com.penny.penny_backend.dto.TeacherAccountDTO;
-import com.penny.penny_backend.dto.TeacherAccountHistoryDTO;
+import com.penny.penny_backend.dto.*;
 import com.penny.penny_backend.service.TeacherAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,66 +26,119 @@ public class TeacherAccountController {
 
     // 계좌 생성
     @PostMapping
-    public ResponseEntity<TeacherAccount> createAccount(@RequestBody Long teacherId,
-                                                        @RequestBody String nickname) {
+    public ResponseEntity<ApiResponseDTO<TeacherAccountDTO>> createAccount(@RequestBody TeacherAccountRequestDTO teacherAccountRequestDTO) {
         try {
+            // RequestDTO에서 데이터 추출
+            Long teacherId = teacherAccountRequestDTO.getTeacherId();
+            String nickname = teacherAccountRequestDTO.getNickname();
+
+            // teacherAccount 생성
             TeacherAccount teacherAccount = teacherAccountService.createAccount(teacherId, nickname);
-            return new ResponseEntity<>(teacherAccount, HttpStatus.CREATED);
+
+            TeacherAccountDTO teacherAccountDTO = new TeacherAccountDTO(
+                    teacherAccount.getTeacherId(),
+                    teacherAccount.getNickname(),
+                    teacherAccount.getAmount()
+            );
+
+            ApiResponseDTO<TeacherAccountDTO> response = new ApiResponseDTO<>(
+                    "success",
+                    "Account created successfully",
+                    teacherAccountDTO
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            ApiResponseDTO<TeacherAccountDTO> response = new ApiResponseDTO<>(
+                    "error",
+                    e.getMessage(),
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     // 계좌 조회
     @GetMapping("/{teacherId}")
-    public ResponseEntity<TeacherAccountDTO> getAccountByTeacherId(@PathVariable Long teacherId) {
+    public ResponseEntity<ApiResponseDTO<TeacherAccountDTO>> getAccountByTeacherId(@PathVariable Long teacherId) {
         Optional<TeacherAccount> teacherAccount = teacherAccountService.getAccountByTeacherId(teacherId);
-        return teacherAccount.map(account -> {
+
+        return teacherAccount.map(value -> {
             TeacherAccountDTO teacherAccountDTO = new TeacherAccountDTO(
-                    account.getTeacherId(),
-                    account.getNickname(),
-                    account.getAmount()
+                    value.getTeacherId(),
+                    value.getNickname(),
+                    value.getAmount()
             );
-            return new ResponseEntity<>(teacherAccountDTO, HttpStatus.OK);
-        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+            ApiResponseDTO<TeacherAccountDTO> response = new ApiResponseDTO<>(
+                    "success",
+                    "Account retrieved successfully",
+                    teacherAccountDTO
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }).orElseGet(() -> {
+            ApiResponseDTO<TeacherAccountDTO> response = new ApiResponseDTO<>(
+                    "error",
+                    "Account not found",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        });
     }
 
     // 계좌 사용 내역 조회
     @GetMapping("/{teacherId}/history")
-    public ResponseEntity<List<TeacherAccountHistoryDTO>> getAccountHistoryByTeacherId(@PathVariable Long teacherId) {
-        List<TeacherAccountHistory> historyList = teacherAccountService.getAccountHistoryByTeacherId(teacherId);
+    public ResponseEntity<ApiResponseDTO<List<TeacherAccountHistoryDTO>>> getAccountHistoryByTeacherId(@PathVariable Long teacherId) {
+        try {
+            List<TeacherAccountHistory> historyList = teacherAccountService.getAccountHistoryByTeacherId(teacherId);
 
-        List<TeacherAccountHistoryDTO> historyDTOList = historyList.stream()
-                .map(history -> new TeacherAccountHistoryDTO(
-                        history.getContent(),
-                        history.getAmount(),
-                        history.isInOrOut(),
-                        history.getDatetime()
-                )).toList();
+            List<TeacherAccountHistoryDTO> historyDTOList = historyList.stream()
+                    .map(history -> new TeacherAccountHistoryDTO(
+                            history.getContent(),
+                            history.getAmount(),
+                            history.isInOrOut(),
+                            history.getDatetime()
+                    )).toList();
 
-        return new ResponseEntity<>(historyDTOList, HttpStatus.OK);
+            ApiResponseDTO<List<TeacherAccountHistoryDTO>> response = new ApiResponseDTO<>(
+                    "success",
+                    "Account history retrieved successfully",
+                    historyDTOList);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            ApiResponseDTO<List<TeacherAccountHistoryDTO>> response = new ApiResponseDTO<>(
+                    "error",
+                    e.getMessage(),
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
      // 학생 월급 지급
      @PostMapping("/{teacherId}/payments")
-     public ResponseEntity<SalaryPaymentResponseDTO> paySalaryToStudents(@PathVariable Long teacherId) {
+     public ResponseEntity<ApiResponseDTO<String>> paySalaryToStudents(@PathVariable Long teacherId) {
          try {
              teacherAccountService.paySalaryToStudents(teacherId);
-             SalaryPaymentResponseDTO response = new SalaryPaymentResponseDTO("월급 지급이 완료되었습니다.");
+             ApiResponseDTO<String> response = new ApiResponseDTO<>("success", "월급 지급이 완료되었습니다.", null);
              return new ResponseEntity<>(response, HttpStatus.OK);
          } catch (IllegalArgumentException e) {
-             SalaryPaymentResponseDTO response = new SalaryPaymentResponseDTO(e.getMessage());
+             ApiResponseDTO<String> response = new ApiResponseDTO<>("error", e.getMessage(), null);
              return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
          }
      }
 
     @DeleteMapping("/{teacherId}")
-    public ResponseEntity<String> deleteTeacherAccount(@PathVariable Long teacherId) {
+    public ResponseEntity<ApiResponseDTO<String>> deleteTeacherAccount(@PathVariable Long teacherId) {
         try {
             teacherAccountService.deleteTeacherAccount(teacherId);
-            return new ResponseEntity<>("선생님 계좌가 삭제되었습니다.", HttpStatus.OK);
+            ApiResponseDTO<String> response = new ApiResponseDTO<>("success", "Account deleted successfully", null);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            ApiResponseDTO<String> response = new ApiResponseDTO<>("error", e.getMessage(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
 

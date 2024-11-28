@@ -12,4 +12,3 @@ public class TransferRequestDTO {
     private String toAccountNum;   // 수신자 계좌 번호
     private int amount;            // 이체 금액
 }
-//
