@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountDTO {
-    private Long studentId;  // 학생 ID
-    private String nickname; // 닉네임
-    private int balance;     // 잔액
+public class AccountRequestDTO {
+    private Long studentId;
+    private String nickname;
 }

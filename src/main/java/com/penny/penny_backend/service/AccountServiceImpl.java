@@ -53,11 +53,12 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public List<AccountHistory> getAccountHistoryByStudentId(Long studentId) {
-        // 특정 studentId와 accountId로 사용 내역을 조회
-        return accountRepository.findById(studentId)
-                .map(Account::getAccountHistories)
-                .orElse(Collections.emptyList());
-//        return accountHistoryRepository.findByAccount_StudentId(studentId);
+        // 계좌 존재 여부 확인
+        Account account = accountRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 Student ID의 계좌가 존재하지 않습니다."));
+
+        // 존재하는 경우, 계좌 사용 내역 반환
+        return account.getAccountHistories();
     }
 
     @Override

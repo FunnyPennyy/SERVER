@@ -2,9 +2,7 @@ package com.penny.penny_backend.controller;
 
 import com.penny.penny_backend.domain.Account;
 import com.penny.penny_backend.domain.AccountHistory;
-import com.penny.penny_backend.dto.AccountDTO;
-import com.penny.penny_backend.dto.AccountHistoryDTO;
-import com.penny.penny_backend.dto.TransferRequestDTO;
+import com.penny.penny_backend.dto.*;
 import com.penny.penny_backend.service.AccountService;
 import com.penny.penny_backend.service.TeacherAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,52 +28,104 @@ public class AccountController {
 
     // 계좌 생성
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Long studentId,
-                                                 @RequestBody String nickname) {
+    public ResponseEntity<ApiResponseDTO<AccountDTO>> createAccount(@RequestBody AccountRequestDTO accountRequestDTO) {
         try {
-            System.out.println("studentId = " + studentId);
+            // RequestDTO에서 데이터 추출
+            Long studentId = accountRequestDTO.getStudentId();
+            String nickname = accountRequestDTO.getNickname();
+
+            // Account 생성
             Account account = accountService.createAccount(studentId, nickname);
-            System.out.println("accout_created\n");
-            return new ResponseEntity<>(account, HttpStatus.CREATED);
+
+            // 생성된 Account를 DTO로 변환하여 반환
+            AccountDTO accountDTO = new AccountDTO(
+                    account.getStudentId(),
+                    account.getNickname(),
+                    account.getAmount()
+            );
+
+            ApiResponseDTO<AccountDTO> response = new ApiResponseDTO<>(
+                    "success",
+                    "Account created successfully",
+                    accountDTO
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            ApiResponseDTO<AccountDTO> response = new ApiResponseDTO<>(
+                    "error",
+                    e.getMessage(),
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     // 계좌 조회
     @GetMapping("/{studentId}")
-    public ResponseEntity<AccountDTO> getAccountByStudentId(@PathVariable Long studentId) {
+    public ResponseEntity<ApiResponseDTO<AccountDTO>> getAccountByStudentId(@PathVariable Long studentId) {
         Optional<Account> account = accountService.getAccountByStudentId(studentId);
+
         return account.map(value -> {
-            // 엔티티를 DTO로 변환
+            // Entity -> DTO 변환
             AccountDTO accountDTO = new AccountDTO(
                     value.getStudentId(),
                     value.getNickname(),
                     value.getAmount()
             );
-            return new ResponseEntity<>(accountDTO, HttpStatus.OK);
-        }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+            // DTO를 ApiResponse로 감싸서 반환
+            ApiResponseDTO<AccountDTO> response = new ApiResponseDTO<>(
+                    "success",
+                    "Account retrieved successfully",
+                    accountDTO
+            );
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }).orElseGet(() -> {
+            ApiResponseDTO<AccountDTO> response = new ApiResponseDTO<>(
+                    "error",
+                    "Account not found",
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        });
     }
 
     // 계좌 사용 내역 조회
     @GetMapping("/{studentId}/history")
-    public ResponseEntity<List<AccountHistoryDTO>> getAccountHistoryByStudentId(@PathVariable Long studentId) {
-        List<AccountHistory> historyList = accountService.getAccountHistoryByStudentId(studentId);
+    public ResponseEntity<ApiResponseDTO<List<AccountHistoryDTO>>> getAccountHistoryByStudentId(@PathVariable Long studentId) {
+        try {
+            List<AccountHistory> historyList = accountService.getAccountHistoryByStudentId(studentId);
 
-        // 엔티티 리스트를 DTO 리스트로 변환
-        List<AccountHistoryDTO> historyDTOList = historyList.stream()
-                .map(history -> new AccountHistoryDTO(
-                        history.getContent(),
-                        history.getAmount(),
-                        history.isInOrOut(),
-                        history.getDatetime()
-                )).toList();
+            // 엔티티 리스트를 DTO 리스트로 변환
+            List<AccountHistoryDTO> historyDTOList = historyList.stream()
+                    .map(history -> new AccountHistoryDTO(
+                            history.getContent(),
+                            history.getAmount(),
+                            history.isInOrOut(),
+                            history.getDatetime()
+                    )).toList();
 
-        return new ResponseEntity<>(historyDTOList, HttpStatus.OK);
+            ApiResponseDTO<List<AccountHistoryDTO>> response = new ApiResponseDTO<>(
+                    "success",
+                    "Account history retrieved successfully",
+                    historyDTOList);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            ApiResponseDTO<List<AccountHistoryDTO>> response = new ApiResponseDTO<>(
+                    "error",
+                    e.getMessage(),
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        }
     }
 
+    // 계좌 이체
     @PostMapping("/transfer")
-    public ResponseEntity<String> transfer(@RequestBody TransferRequestDTO transferRequestDTO) {
+    public ResponseEntity<ApiResponseDTO<String>> transfer(@RequestBody TransferRequestDTO transferRequestDTO) {
         try {
             String fromAccountNum = transferRequestDTO.getFromAccountNum();
             String toAccountNum = transferRequestDTO.getToAccountNum();
@@ -83,25 +133,47 @@ public class AccountController {
 
             if (accountService.isStudentAccount(toAccountNum)) {
                 accountService.transferToStudent(fromAccountNum, toAccountNum, amount);
-                return new ResponseEntity<>("Transfer to student successful", HttpStatus.OK);
+                ApiResponseDTO<String> response = new ApiResponseDTO<>(
+                        "success",
+                        "Transfer to student successful",
+                        null
+                );
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else if (teacherAccountService.isTeacherAccount(toAccountNum)) {
                 accountService.transferToTeacher(fromAccountNum, toAccountNum, amount);
-                return new ResponseEntity<>("Transfer to teacher successful", HttpStatus.OK);
+                ApiResponseDTO<String> response = new ApiResponseDTO<>(
+                        "success",
+                        "Transfer to teacher successful",
+                        null
+                );
+                return new ResponseEntity<>(response, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Recipient account not found", HttpStatus.NOT_FOUND);
+                ApiResponseDTO<String> response = new ApiResponseDTO<>(
+                        "error",
+                        "Recipient account not found",
+                        null
+                );
+                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
             }
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            ApiResponseDTO<String> response = new ApiResponseDTO<>(
+                    "error",
+                    e.getMessage(),
+                    null
+            );
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping("/{studentId}")
-    public ResponseEntity<String> deleteAccount(@PathVariable Long studentId) {
+    public ResponseEntity<ApiResponseDTO<String>> deleteAccount(@PathVariable Long studentId) {
         try {
             accountService.deleteAccount(studentId);
-            return new ResponseEntity<>("계좌가 삭제되었습니다.", HttpStatus.OK);
+            ApiResponseDTO<String> response = new ApiResponseDTO<>("success", "Account deleted successfully", null);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            ApiResponseDTO<String> response = new ApiResponseDTO<>("error", e.getMessage(), null);
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
     }
 }
