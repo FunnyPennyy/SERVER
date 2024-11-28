@@ -147,7 +147,8 @@ public class AccountServiceImpl implements AccountService{
         return accountRepository.findByAccountNum(accountNum).isPresent();
     }
 
-    private void addAccountHistory(Account account, String content, int amount, boolean inOrOut, Long counterpartyId,
+    @Override
+    public void addAccountHistory(Account account, String content, int amount, boolean inOrOut, Long counterpartyId,
                                    String myName, String counterpartyName) {
         AccountHistory accountHistory = new AccountHistory(content, amount, inOrOut, counterpartyId, myName, counterpartyName, account);
 //        account.addAccountHistory(accountHistory);

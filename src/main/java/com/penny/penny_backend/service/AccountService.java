@@ -27,4 +27,7 @@ public interface AccountService {
     void deleteAccount(Long studentId);
 //
     boolean isStudentAccount(String accountNum);
+
+    void addAccountHistory(Account account, String content, int amount, boolean inOrOut, Long counterpartyId,
+                                  String myName, String counterpartyName);
 }

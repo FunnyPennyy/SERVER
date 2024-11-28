@@ -18,19 +18,22 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
     private final TeacherAccountRepository teacherAccountRepository;
     private final TeacherAccountHistoryRepository teacherAccountHistoryRepository;
     private final JobRepository jobRepository;
+    private final AccountService accountService;
 
     public TeacherAccountServiceImpl(TeacherRepository teacherRepository,
                                      StudentRepository studentRepository,
                                      AccountRepository accountRepository,
                                      TeacherAccountRepository teacherAccountRepository,
                                      TeacherAccountHistoryRepository teacherAccountHistoryRepository,
-                                     JobRepository jobRepository) {
+                                     JobRepository jobRepository,
+                                     AccountService accountService) {
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.accountRepository = accountRepository;
         this.teacherAccountRepository = teacherAccountRepository;
         this.teacherAccountHistoryRepository = teacherAccountHistoryRepository;
         this.jobRepository = jobRepository;
+        this.accountService = accountService;
     }
 
     @Override
@@ -71,6 +74,9 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
         // 2. 해당 classId를 가진 학생 목록 찾기
         List<Student> students = studentRepository.findByClassroom_ClassroomId(classId);
 
+        TeacherAccount teacherAccount = teacherAccountRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 teacherId를 가진 선생님 계좌가 존재하지 않습니다."));
+
         // 3. 각 학생의 직업에 따른 월급을 지급
         for (Student student : students) {
             Long jobId = student.getJobId();
@@ -85,8 +91,15 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
                     .orElseThrow(() -> new IllegalArgumentException("해당 studentId를 가진 계좌가 없습니다."));
             account.setAmount(account.getAmount() + salary);
 
+            // 학생 계좌 내역 추가
+            accountService.addAccountHistory(account, "월급", salary, false, teacherId, student.getStudentName(), teacher.getTeacherName());
             // 변경된 계좌 정보를 저장
             accountRepository.save(account);
+
+            TeacherAccountHistory teacherAccountHistory = new TeacherAccountHistory(
+                    "월급 지급", salary, true, student.getStudentId(), teacher.getTeacherName(), student.getStudentName(), teacherAccount);
+//        teacherAccount.addTeacherAccountHistory(teacherAccountHistory);
+            teacherAccountHistoryRepository.save(teacherAccountHistory);
         }
     }
 //
