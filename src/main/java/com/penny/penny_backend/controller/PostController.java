@@ -23,7 +23,7 @@ public class PostController {
     private final PostService postService;
 
     // 게시글 생성 (선생님만)
-    @PreAuthorize("hasRole('TEACHER')") // 선생님만
+    //@PreAuthorize("hasRole('TEACHER')") // 선생님만
     @PostMapping("/post")
     public ResponseEntity<PostResponse> createPost(@RequestBody CreatePostRequest request) {
         Post post = postService.createPost(request);
