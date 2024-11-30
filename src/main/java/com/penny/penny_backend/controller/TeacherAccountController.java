@@ -36,7 +36,7 @@ public class TeacherAccountController {
             TeacherAccount teacherAccount = teacherAccountService.createAccount(teacherId, nickname);
 
             TeacherAccountDTO teacherAccountDTO = new TeacherAccountDTO(
-                    teacherAccount.getTeacherId(),
+                    teacherAccount.getTeacher().getTeacherId(),
                     teacherAccount.getNickname(),
                     teacherAccount.getAmount()
             );
@@ -65,7 +65,7 @@ public class TeacherAccountController {
 
         return teacherAccount.map(value -> {
             TeacherAccountDTO teacherAccountDTO = new TeacherAccountDTO(
-                    value.getTeacherId(),
+                    value.getTeacher().getTeacherId(),
                     value.getNickname(),
                     value.getAmount()
             );

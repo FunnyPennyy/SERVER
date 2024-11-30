@@ -39,7 +39,7 @@ public class AccountController {
 
             // 생성된 Account를 DTO로 변환하여 반환
             AccountDTO accountDTO = new AccountDTO(
-                    account.getStudentId(),
+                    account.getStudent().getStudentId(),
                     account.getNickname(),
                     account.getAmount()
             );
@@ -70,7 +70,7 @@ public class AccountController {
         return account.map(value -> {
             // Entity -> DTO 변환
             AccountDTO accountDTO = new AccountDTO(
-                    value.getStudentId(),
+                    value.getStudent().getStudentId(),
                     value.getNickname(),
                     value.getAmount()
             );

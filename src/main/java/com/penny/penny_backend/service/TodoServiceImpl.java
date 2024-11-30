@@ -33,7 +33,7 @@ public class TodoServiceImpl implements TodoService {
     public List<TodoContent> createDefaultTodoList(Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 Student ID를 가진 학생이 존재하지 않습니다."));
-        Job job = jobRepository.findById(student.getJobId())
+        Job job = jobRepository.findById(student.getJob().getJobId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 Job ID를 가진 Job이 존재하지 않습니다."));
 
         Todo todo = new Todo(student.getStudentId());
