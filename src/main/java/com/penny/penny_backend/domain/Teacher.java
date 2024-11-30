@@ -26,4 +26,5 @@ public class Teacher {
     @JoinColumn(name = "classroom_id", foreignKey = @ForeignKey(name = "fk_classroom"))
     private Classroom classroom;
 
+
 }
