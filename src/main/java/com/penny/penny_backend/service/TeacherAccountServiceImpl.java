@@ -40,11 +40,13 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
     public TeacherAccount createAccount(Long teacherId, String nickname) {
         // 비즈니스 로직: 통장 생성 전 유효성 검사 또는 기타 작업
         // initialAmount 몇으로 설정?
+        Teacher teacher = teacherRepository.findById(teacherId)
+                .orElseThrow(() -> new IllegalArgumentException("선생님이 존재하지 않습니다."));
 
         // accountNum 생성 알고리즘 필요
         String accountNum = "1111-11-1111";
 
-        TeacherAccount teacherAccount = new TeacherAccount(teacherId, nickname, 100000000, accountNum);
+        TeacherAccount teacherAccount = new TeacherAccount(nickname, 100000000, accountNum, teacher);
         return teacherAccountRepository.save(teacherAccount);
     }
 
@@ -79,7 +81,7 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
 
         // 3. 각 학생의 직업에 따른 월급을 지급
         for (Student student : students) {
-            Long jobId = student.getJobId();
+            Long jobId = student.getJob().getJobId();
 
             // 직업에 따른 월급 조회
             Job job = jobRepository.findById(jobId)
@@ -115,7 +117,7 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
         // 선생님 계좌 잔액 업데이트 및 계좌 내역 추가
         teacherAccount.setAmount(teacherAccount.getAmount() + amount);
         TeacherAccountHistory teacherAccountHistory = new TeacherAccountHistory(
-                "입금", amount, false, studentAccount.getStudentId(), teacherName, studentName, teacherAccount);
+                "입금", amount, false, studentAccount.getStudent().getStudentId(), teacherName, studentName, teacherAccount);
 //        teacherAccount.addTeacherAccountHistory(teacherAccountHistory);
         teacherAccountHistoryRepository.save(teacherAccountHistory);
         teacherAccountRepository.save(teacherAccount);

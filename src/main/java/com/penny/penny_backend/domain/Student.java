@@ -11,8 +11,6 @@ import com.penny.penny_backend.domain.Classroom;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Student {
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
@@ -23,5 +21,15 @@ public class Student {
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id") // 외래 키 컬럼 이름
+    private Job job;
 
+    @Builder
+    public Student(String studentName, Integer credit, Classroom classroom, Job job) {
+        this.studentName = studentName;
+        this.credit = credit;
+        this.classroom = classroom;
+        this.job = job;
+    }
 }

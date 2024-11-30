@@ -31,18 +31,21 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public Account createAccount(Long studentId, String nickname) {
-        // initialAmount 몇으로 설정? 일단 0으로
+        // initialAmount 몇으로 설정? 일단 500,000으로
         // 학생이 존재하는지 확인 필요?
 
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다"));
+
         // 이미 계좌가 존재하는지 확인
-        if (accountRepository.findById(studentId).isPresent()) {
+        if (accountRepository.findByStudent_StudentId(studentId).isPresent()) {
             throw new IllegalArgumentException("해당 학생은 이미 계좌를 가지고 있습니다.");
         }
 
         // 계좌번호 생성 알고리즘 작성
         String accountNum = "1111-11-1111";
 
-        Account account = new Account(studentId, nickname, 0, accountNum);
+        Account account = new Account(nickname, 500000, accountNum, student);
         return accountRepository.save(account);
     }
 
@@ -73,9 +76,9 @@ public class AccountServiceImpl implements AccountService{
         Account toAccount = accountRepository.findByAccountNum(toAccountNum)
                 .orElseThrow(() -> new IllegalArgumentException("수신자 계좌가 존재하지 않습니다."));
 
-        Student fromStudent = studentRepository.findById(fromAccount.getStudentId())
+        Student fromStudent = studentRepository.findById(fromAccount.getStudent().getStudentId())
                 .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다."));
-        Student toStudent = studentRepository.findById(toAccount.getStudentId())
+        Student toStudent = studentRepository.findById(toAccount.getStudent().getStudentId())
                 .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다."));
 
         // 잔액 확인 및 이체 처리
@@ -87,10 +90,10 @@ public class AccountServiceImpl implements AccountService{
         toAccount.setAmount(toAccount.getAmount() + amount);
 
         // 송금자 계좌 내역 추가
-        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getStudentId(),
+        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getStudent().getStudentId(),
                 fromStudent.getStudentName(), toStudent.getStudentName());
         // 수신자 계좌 내역 추가
-        addAccountHistory(toAccount, "입금", amount, false, fromAccount.getStudentId(),
+        addAccountHistory(toAccount, "입금", amount, false, fromAccount.getStudent().getStudentId(),
                 toStudent.getStudentName(), fromStudent.getStudentName());
 
         // 변경된 계좌와 내역 저장
@@ -107,9 +110,9 @@ public class AccountServiceImpl implements AccountService{
         TeacherAccount toAccount = teacherAccountRepository.findByAccountNum(toAccountNum)
                 .orElseThrow(() -> new IllegalArgumentException("선생님 계좌가 존재하지 않습니다."));
 
-        Student fromStudent = studentRepository.findById(fromAccount.getStudentId())
+        Student fromStudent = studentRepository.findById(fromAccount.getStudent().getStudentId())
                 .orElseThrow(() -> new IllegalArgumentException("학생이 존재하지 않습니다."));
-        Teacher teacher = teacherRepository.findById(toAccount.getTeacherId())
+        Teacher teacher = teacherRepository.findById(toAccount.getTeacher().getTeacherId())
                 .orElseThrow(() -> new IllegalArgumentException("선생님이 존재하지 않습니다."));
 
         if (fromAccount.getAmount() < amount) {
@@ -120,7 +123,7 @@ public class AccountServiceImpl implements AccountService{
         fromAccount.setAmount(fromAccount.getAmount() - amount);
 
         // 송금한 학생 계좌 내역 추가
-        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getTeacherId(),
+        addAccountHistory(fromAccount, "송금", amount, true, toAccount.getTeacher().getTeacherId(),
                 fromStudent.getStudentName(), teacher.getTeacherName());
         // 선생님 계좌 내역 추가
 //        teacherAccountService.addTeacherAccountHistory(toAccount, "입금", amount, false, fromAccount.getStudentId(), teacher.getName(), fromStudent.getName());
