@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class PostController {
     }
 
     // 게시글 수정 (선생님만)
-    @PreAuthorize("hasRole('TEACHER')") // 선생님만
+//    @PreAuthorize("hasRole('TEACHER')") // 선생님만
     @PutMapping("/post/{id}")
     public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequest request) {
         Post post = postService.update(id, request);
@@ -55,7 +55,7 @@ public class PostController {
     }
 
     // 게시글 삭제 (선생님만)
-    @PreAuthorize("hasRole('TEACHER')") // 선생님만
+//    @PreAuthorize("hasRole('TEACHER')") // 선생님만
     @DeleteMapping("/post/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         postService.deletePost(id);

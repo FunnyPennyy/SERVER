@@ -2,10 +2,7 @@ package com.penny.penny_backend.domain;
 
 import jakarta.persistence.*;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,8 @@ import java.util.List;
 @ToString
 public class Account {
     @Id
-    private Long studentId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long accountId;
 
     private String nickname;
     private int amount;
@@ -26,18 +24,15 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AccountHistory> accountHistories = new ArrayList<>();
 
-    //    @OneToOne(mappedBy = "")
-//
-    // Constructor
-    public Account(Long studentId, String nickname, int amount, String accountNum) {
-        this.studentId = studentId;
+    @OneToOne
+    @JoinColumn(name = "student_id", referencedColumnName = "studentId", unique = true, nullable = false)
+    private Student student;
+
+    @Builder
+    public Account(String nickname, int amount, String accountNum, Student student) {
         this.nickname = nickname;
         this.amount = amount;
         this.accountNum = accountNum;
+        this.student = student;
     }
-
-//    public void addAccountHistory(AccountHistory accountHistory) {
-//        accountHistories.add(accountHistory); // Account 엔티티에 AccountHistory 추가
-//        accountHistory.setAccount(this); // AccountHistory 엔티티에 Account 설정
-//    }
 }

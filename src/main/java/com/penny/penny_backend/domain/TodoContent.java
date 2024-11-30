@@ -1,0 +1,42 @@
+package com.penny.penny_backend.domain;
+
+import jakarta.persistence.*;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.time.LocalDate;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+public class TodoContent {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long contentId;
+
+    private String content;
+    private boolean isChecked;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "todo_id", nullable = false)
+    private Todo todo;
+
+    public TodoContent(String content, boolean isChecked, Todo todo) {
+        this.content = content;
+        this.isChecked = isChecked;
+        setTodo(todo);
+    }
+//
+    public void setTodo(Todo todo) {
+        this.todo = todo;
+        if (todo != null && !todo.getTodoContents().contains(this)) {
+            todo.getTodoContents().add(this);
+        }
+    }
+}
