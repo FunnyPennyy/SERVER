@@ -23,14 +23,19 @@ public class MemberService{
     private final JwtTokenProvider jwtTokenProvider;
 
     public JwtToken signIn(String username, String password){
-        UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(username, password);
+        try{
+            UsernamePasswordAuthenticationToken authenticationToken
+                    = new UsernamePasswordAuthenticationToken(username, password);
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+            JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
 
-        return jwtToken;
+            return jwtToken;
 
+        }catch (Exception e){
+            System.err.println(e);
+        }
+        return null;
     }
 }
