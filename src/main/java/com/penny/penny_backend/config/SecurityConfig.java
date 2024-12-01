@@ -53,8 +53,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/members/sign-in").permitAll()
                         .requestMatchers("/members/sign-up").permitAll()
-                        //.anyRequest().authenticated() //그 외는 권한 필요
-                        .anyRequest().permitAll()
+                        .requestMatchers("/members/test").hasRole("USER")
+                        .anyRequest().authenticated() //그 외는 권한 필요
 
                 )
                 .formLogin((form)-> form.disable())

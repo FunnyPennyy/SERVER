@@ -77,6 +77,7 @@ public class JwtTokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get("auth") == null){
+            log.error("권한 정보가 없는 토큰입니다. ");
             throw  new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
@@ -85,7 +86,7 @@ public class JwtTokenProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        UserDetails principal = new User((String) claims.get("aud"), "", authorities);
+        //UserDetails principal = new User((String) claims.get("aud"), "", authorities);
 //        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
 //
 //        UserDetails principal = org.springframework.security.core.userdetails.User
@@ -95,7 +96,7 @@ public class JwtTokenProvider {
 //                .authorities(authorities)
 //                .build();
 
-        return new UsernamePasswordAuthenticationToken(principal, accessToken, authorities);
+        return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
     }
 
     // 토큰 정보를 검증하는 메서드
