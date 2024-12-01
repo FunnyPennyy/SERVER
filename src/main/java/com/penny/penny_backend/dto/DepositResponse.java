@@ -1,5 +1,7 @@
 package com.penny.penny_backend.dto;
 
+import com.penny.penny_backend.domain.Deposit;
+import com.penny.penny_backend.domain.DepositType;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -9,13 +11,21 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class DepositResponse {
-    private Long id; // 예금 통장 ID
-    private String user; // 사용자 ID
-    private double amount; // 예치 금액
+    private Long id; // 예금 ID
+    private Long ownerId; // 예금 통장 주인 ID (Student ID)
+    private int amount; // 계좌 잔액
     private LocalDate createdDate; // 생성일
     private LocalDate maturityDate; // 만기일
     private LocalDate terminationDate; // 해지일
     private String depositTypeName; // 예금 상품 이름
-    private int depositTypeDuration; // 예금 상품 기간
-    private int depositTypeInterest; // 예금 상품 이자율
+
+    public DepositResponse(Deposit deposit) {
+        this.id = deposit.getId();
+        this.ownerId = deposit.getOwner().getStudentId();
+        this.amount = deposit.getAccount().getAmount();
+        this.createdDate = deposit.getCreatedDate();
+        this.maturityDate = deposit.getMaturityDate();
+        this.terminationDate = deposit.getTerminationDate();
+        this.depositTypeName = deposit.getDepositType().getName();
+    }
 }

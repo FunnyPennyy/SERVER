@@ -10,10 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class UpdatePostRequest {
-    private Long id;
     private String title;
     private String content;
-    private String author;
-    private LocalDateTime createdAt;
 
 }

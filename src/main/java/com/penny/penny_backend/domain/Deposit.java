@@ -15,18 +15,21 @@ import java.time.LocalDate;
 @Entity
 public class Deposit {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 예금통장 id
 
-    //@ManyToOne
-    //@JoinColumn(name = "user_id", nullable = false) // User FK
-    private String user; // 통장 주인
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false) // Student FK
+    private Student owner; // 예금통장 주인
 
-    private double amount;
+    @ManyToOne
+    @JoinColumn(name = "account_id", nullable = false) // Account FK
+    private Account account; // 연결된 계좌
 
-    private LocalDate createdDate = LocalDate.now(); // 생성일: 현재 날짜
+    private int amount; // 예금 금액 (사용자가 금액 얼마 넣을지 설정)
+
+    private LocalDate createdDate; // 생성일: 현재 날짜
 
     private LocalDate maturityDate; // 만기일
     private LocalDate terminationDate = null; // 해지일
@@ -37,20 +40,15 @@ public class Deposit {
 
 
     @Builder
-    public Deposit(Long id, String user, double amount, DepositType depositType) {
+    public Deposit(Long id, Student owner, Account account, int amount, DepositType depositType) {
         this.id = id;
-        this.amount= amount;
-        this.createdDate = LocalDate.now();
-        this.user = user;
-
+        this.owner = owner;
+        this.account = account;
+        this.amount = amount;
         this.depositType = depositType;
+        this.createdDate = LocalDate.now();
 
-        // 만기일 계산: 생성일에 DepositType 의 기간(duration)을 추가
-        if (depositType != null && depositType.getDuration() > 0) {
-            this.maturityDate = this.createdDate.plusMonths(depositType.getDuration());
-        } else {
-            this.maturityDate = null; // 기간이 0 이하라면 null 로 설정
-        }
+
     }
 
 

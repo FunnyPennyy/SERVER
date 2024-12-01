@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/members/sign-in").permitAll()
                         .requestMatchers("/members/sign-up").permitAll()
                         //.anyRequest().authenticated() //그 외는 권한 필요
-                        .anyRequest().permitAll()
+                        .anyRequest().permitAll() // 다 열어둠(테스트용)
 
                 )
                 .formLogin((form)-> form.disable())
