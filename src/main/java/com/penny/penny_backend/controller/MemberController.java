@@ -1,6 +1,7 @@
 package com.penny.penny_backend.controller;
 
 import com.penny.penny_backend.jwt.JwtToken;
+import com.penny.penny_backend.jwt.JwtTokenProvider;
 import com.penny.penny_backend.service.MemberService;
 import com.penny.penny_backend.dto.SignInRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping("/sign-in")
     public JwtToken signIn(@RequestBody SignInRequest signInRequest) {

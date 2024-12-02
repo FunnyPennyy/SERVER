@@ -10,11 +10,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
-public class UserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     MemberRepository memberRepository;
@@ -22,20 +20,18 @@ public class UserDetailService implements UserDetailsService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-//    public Optional<Member> loadUserByUSername(String username) throws  UsernameNotFoundException{
-//        return memberRepository.findByUsername(username);
-//    }
+
     public UserDetails loadUserByUsername(String username) throws
             UsernameNotFoundException{
-        return memberRepository.findByUsername(username)
-                .map(this::createUserDetails)
-                .orElseThrow(()->new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다."));
+        return (UserDetails) memberRepository.findByUsername(username)
+//                .map(this::createUserDetails)
+                .orElseThrow(()->new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다." + username));
     }
 
-    public  UserDetails createUserDetails(Member member){
-        return Member.builder()
-                .username(member.getUsername())
-                .password((passwordEncoder.encode(member.getPassword())))
-                .build();
-    }
+//    public  UserDetails createUserDetails(Member member){
+//        return Member.builder()
+//                .username(member.getUsername())
+//                .password((passwordEncoder.encode(member.getPassword())))
+//                .build();
+//    }
 }

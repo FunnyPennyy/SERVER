@@ -3,14 +3,11 @@ package com.penny.penny_backend.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.*;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -18,10 +15,10 @@ import java.util.stream.Collectors;
 @Setter
 @Entity
 @Builder
-public class Member implements UserDetails {
+public class Member {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id", updatable = false)
     private Long Id;
     // 로그인 아이디
@@ -29,25 +26,35 @@ public class Member implements UserDetails {
     private String username;
     @Column(name="password", nullable = false)
     private String password;
-//    @Column(name = "role", nullable = false)
-//    private String role; //TEACHER (admin) or Student(User)
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+    public enum Role{
+        ADMIN, USER
     }
+
+    public List<GrantedAuthority> getAuthorities(){
+        return Collections.singletonList(new SimpleGrantedAuthority(role.num()));
+    }
+
+
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Builder.Default
+//    private List<String> roles = new ArrayList<>();
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return null;
+//        return this.roles.stream()
+//                .map(SimpleGrantedAuthority::new)
+//                .collect(Collectors.toList());
+//    }
+//
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return Collections.singletonList(new SimpleGrantedAuthority(role));
 //    }
 
-    @Override
+ /*   @Override
     public String getPassword() {
         return password;
     }
@@ -56,11 +63,6 @@ public class Member implements UserDetails {
     public String getUsername() {
         return username;
     }
-
-//    @Override
-//    public String getRole() {
-//        return role;
-//    }
 
 
     @Override
@@ -82,5 +84,7 @@ public class Member implements UserDetails {
     public boolean isEnabled() { // 사용자 활성화 여부
         return true;
     }
-
+*/
 }
+
+
