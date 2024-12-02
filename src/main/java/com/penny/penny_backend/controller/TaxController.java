@@ -1,5 +1,6 @@
 package com.penny.penny_backend.controller;
 
+import com.penny.penny_backend.domain.Tax;
 import com.penny.penny_backend.domain.TaxUsage;
 import com.penny.penny_backend.dto.CreateTaxUsageRequest;
 import com.penny.penny_backend.dto.TaxUsageResponse;
@@ -12,31 +13,34 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
 public class TaxController {
 
-    @Autowired
+    //@Autowired
     private final TaxService taxService;
 
-    @Autowired
+    //@Autowired
     private final TaxUsageService taxUsageService;
 
-    // 세금 현황 (현재금액) 조회
-    @GetMapping("/tax")
-    public ResponseEntity<Integer> getCurrentTaxAmount() {
-        int currentAmount = taxService.getCurrentTaxAmount();
-        return ResponseEntity.ok(currentAmount);
+    // 특정 학급의 세금 조회
+    @GetMapping("/tax/{classroomId}")
+    public ResponseEntity<Tax> getTaxByClassroomId(@PathVariable("classroomId") Long classroomId) {
+        Tax tax = taxService.getTaxByClassroomId(classroomId);
+
+        return ResponseEntity.ok(tax);
     }
 
     // 세금 사용 내역 목록 조회
     @GetMapping("/taxusage")
     public ResponseEntity<List<TaxUsageResponse>> getAllTaxUsage() {
         List<TaxUsageResponse> taxUsages = taxUsageService.getAllTaxUsage().stream()
-                .map(TaxUsageResponse::new)
+                .map(TaxUsageResponse::new) // TaxUsage -> TaxUsageResponse 변환
                 .collect(Collectors.toList());
         return ResponseEntity.ok(taxUsages);
     }

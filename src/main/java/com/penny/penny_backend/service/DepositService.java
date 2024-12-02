@@ -114,14 +114,17 @@ public class DepositService {
 
         // 중도해지 판단
         if (deposit.getTerminationDate().isBefore(deposit.getMaturityDate())) {
+            account.setAmount(account.getAmount() + deposit.getAmount());
+            accountRepository.save(account);
+
             //deposit.setAmount(0); // 중도해지: 이자 지급 안함
             return "중도해지 처리되었습니다.";
         } else {
-            double interest = deposit.getAccount().getAmount() * (deposit.getDepositType().getInterest() / 100.0);
-            double totalAmount = deposit.getAccount().getAmount() + interest;
+            int interestsum = (int) (deposit.getAmount() * (deposit.getDepositType().getInterest() / 100.0));
+            int totalAmount = deposit.getAmount() + interestsum;
 
             // 기존 계좌 잔액에 지급 금액 추가
-            account.setAmount((int) (account.getAmount() + totalAmount));
+            account.setAmount(account.getAmount() + totalAmount);
             accountRepository.save(account);
 
             // 사용자의 account 모델에 totalAmount 추가 로직 구현 필요
@@ -151,7 +154,8 @@ public class DepositService {
         return DepositResponse.builder()
                 .id(deposit.getId())
                 .ownerId(deposit.getOwner().getStudentId())
-                .amount(deposit.getAccount().getAmount())
+                .accountAmount(deposit.getAccount().getAmount())
+                .amount(deposit.getAmount())
                 .createdDate(deposit.getCreatedDate())
                 .maturityDate(deposit.getMaturityDate())
                 .terminationDate(deposit.getTerminationDate())

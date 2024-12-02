@@ -14,17 +14,19 @@ import java.time.LocalDate;
 @Setter
 public class CreateTaxUsageRequest {
 
-    private LocalDate usageDate;
+    private Long taxId;
     private String usageDetail;
     private int usageAmount;
-    private Long recordedBy; // 기록한 사람의 ID (Teacher or 국세청 학생)
+    private Long recorderTeacherId; // 기록한 선생님 ID
+    private Long recorderStudentId; // 기록한 학생 ID
 
-    public TaxUsage toEntity() {
+    /*public TaxUsage toEntity() {
         return TaxUsage.builder()
                 .usageDate(usageDate)
                 .usageDetail(usageDetail)
                 .usageAmount(usageAmount)
-                .recordedBy(recordedBy)
+                .recordedByTeacher(recordedByTeacher)
+                .recordedByTeacher(recordedByTeacher)
                 .build();
-    }
+    }*/
 }
