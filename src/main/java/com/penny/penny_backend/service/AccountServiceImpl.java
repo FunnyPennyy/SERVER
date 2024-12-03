@@ -4,7 +4,7 @@ import com.penny.penny_backend.domain.*;
 import com.penny.penny_backend.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
+import java.util.Random;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,8 +41,12 @@ public class AccountServiceImpl implements AccountService{
             throw new IllegalArgumentException("해당 학생은 이미 계좌를 가지고 있습니다.");
         }
 
-        // 계좌번호 생성 알고리즘 작성
-        String accountNum = "1111-11-1111";
+        // 계좌번호 생성 알고리즘 작성: 학교 코드, 반 코드, 번호
+        Random random = new Random();
+        Long classroomCode = student.getClassroom().getClassroomId() + 10000;
+        String formattedNumCode = String.format("%02d", student.getNum());
+        String uniqueNumber = String.format("%05d", random.nextInt(100000));
+        String accountNum = classroomCode + "-" + formattedNumCode + "-" + uniqueNumber;
 
         Account account = new Account(nickname, 500000, accountNum, student);
         return accountRepository.save(account);
@@ -50,13 +54,13 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public Optional<Account> getAccountByStudentId(Long studentId) {
-        return accountRepository.findById(studentId);
+        return accountRepository.findByStudent_StudentId(studentId);
     }
 
     @Override
     public List<AccountHistory> getAccountHistoryByStudentId(Long studentId) {
         // 계좌 존재 여부 확인
-        Account account = accountRepository.findById(studentId)
+        Account account = accountRepository.findByStudent_StudentId(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 Student ID의 계좌가 존재하지 않습니다."));
 
         // 존재하는 경우, 계좌 사용 내역 반환

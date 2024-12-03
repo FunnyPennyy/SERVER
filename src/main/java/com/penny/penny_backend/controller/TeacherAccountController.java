@@ -37,6 +37,8 @@ public class TeacherAccountController {
 
             TeacherAccountDTO teacherAccountDTO = new TeacherAccountDTO(
                     teacherAccount.getTeacher().getTeacherId(),
+                    teacherAccount.getTeacher().getTeacherName(),
+                    teacherAccount.getAccountNum(),
                     teacherAccount.getNickname(),
                     teacherAccount.getAmount()
             );
@@ -60,12 +62,14 @@ public class TeacherAccountController {
 
     // 계좌 조회
     @GetMapping("/{teacherId}")
-    public ResponseEntity<ApiResponseDTO<TeacherAccountDTO>> getAccountByTeacherId(@PathVariable Long teacherId) {
+    public ResponseEntity<ApiResponseDTO<TeacherAccountDTO>> getAccountByTeacherId(@PathVariable("teacherId") Long teacherId) {
         Optional<TeacherAccount> teacherAccount = teacherAccountService.getAccountByTeacherId(teacherId);
 
         return teacherAccount.map(value -> {
             TeacherAccountDTO teacherAccountDTO = new TeacherAccountDTO(
                     value.getTeacher().getTeacherId(),
+                    value.getTeacher().getTeacherName(),
+                    value.getAccountNum(),
                     value.getNickname(),
                     value.getAmount()
             );
@@ -89,7 +93,7 @@ public class TeacherAccountController {
 
     // 계좌 사용 내역 조회
     @GetMapping("/{teacherId}/history")
-    public ResponseEntity<ApiResponseDTO<List<TeacherAccountHistoryDTO>>> getAccountHistoryByTeacherId(@PathVariable Long teacherId) {
+    public ResponseEntity<ApiResponseDTO<List<TeacherAccountHistoryDTO>>> getAccountHistoryByTeacherId(@PathVariable("teacherId") Long teacherId) {
         try {
             List<TeacherAccountHistory> historyList = teacherAccountService.getAccountHistoryByTeacherId(teacherId);
 
@@ -119,7 +123,7 @@ public class TeacherAccountController {
 
      // 학생 월급 지급
      @PostMapping("/{teacherId}/payments")
-     public ResponseEntity<ApiResponseDTO<String>> paySalaryToStudents(@PathVariable Long teacherId) {
+     public ResponseEntity<ApiResponseDTO<String>> paySalaryToStudents(@PathVariable("teacherId") Long teacherId) {
          try {
              teacherAccountService.paySalaryToStudents(teacherId);
              ApiResponseDTO<String> response = new ApiResponseDTO<>("success", "월급 지급이 완료되었습니다.", null);
@@ -131,7 +135,7 @@ public class TeacherAccountController {
      }
 
     @DeleteMapping("/{teacherId}")
-    public ResponseEntity<ApiResponseDTO<String>> deleteTeacherAccount(@PathVariable Long teacherId) {
+    public ResponseEntity<ApiResponseDTO<String>> deleteTeacherAccount(@PathVariable("teacherId") Long teacherId) {
         try {
             teacherAccountService.deleteTeacherAccount(teacherId);
             ApiResponseDTO<String> response = new ApiResponseDTO<>("success", "Account deleted successfully", null);

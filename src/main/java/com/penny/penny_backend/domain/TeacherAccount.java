@@ -14,6 +14,7 @@ import lombok.*;
 @ToString
 public class TeacherAccount {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teacherAccountId;
 
     private String nickname;

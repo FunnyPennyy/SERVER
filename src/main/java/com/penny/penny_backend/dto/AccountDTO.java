@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AccountDTO {
     private Long studentId;  // 학생 ID
+    private String studentName; // 학생 이름
+    private String accountNum; // 계좌 번호
     private String nickname; // 닉네임
     private int balance;     // 잔액
 }

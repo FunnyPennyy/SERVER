@@ -40,6 +40,8 @@ public class AccountController {
             // 생성된 Account를 DTO로 변환하여 반환
             AccountDTO accountDTO = new AccountDTO(
                     account.getStudent().getStudentId(),
+                    account.getStudent().getStudentName(),
+                    account.getAccountNum(),
                     account.getNickname(),
                     account.getAmount()
             );
@@ -64,13 +66,15 @@ public class AccountController {
 
     // 계좌 조회
     @GetMapping("/{studentId}")
-    public ResponseEntity<ApiResponseDTO<AccountDTO>> getAccountByStudentId(@PathVariable Long studentId) {
+    public ResponseEntity<ApiResponseDTO<AccountDTO>> getAccountByStudentId(@PathVariable("studentId") Long studentId) {
         Optional<Account> account = accountService.getAccountByStudentId(studentId);
 
         return account.map(value -> {
             // Entity -> DTO 변환
             AccountDTO accountDTO = new AccountDTO(
                     value.getStudent().getStudentId(),
+                    value.getStudent().getStudentName(),
+                    value.getAccountNum(),
                     value.getNickname(),
                     value.getAmount()
             );
@@ -94,7 +98,7 @@ public class AccountController {
 
     // 계좌 사용 내역 조회
     @GetMapping("/{studentId}/history")
-    public ResponseEntity<ApiResponseDTO<List<AccountHistoryDTO>>> getAccountHistoryByStudentId(@PathVariable Long studentId) {
+    public ResponseEntity<ApiResponseDTO<List<AccountHistoryDTO>>> getAccountHistoryByStudentId(@PathVariable("studentId") Long studentId) {
         try {
             List<AccountHistory> historyList = accountService.getAccountHistoryByStudentId(studentId);
 
@@ -166,7 +170,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{studentId}")
-    public ResponseEntity<ApiResponseDTO<String>> deleteAccount(@PathVariable Long studentId) {
+    public ResponseEntity<ApiResponseDTO<String>> deleteAccount(@PathVariable("studentId") Long studentId) {
         try {
             accountService.deleteAccount(studentId);
             ApiResponseDTO<String> response = new ApiResponseDTO<>("success", "Account deleted successfully", null);

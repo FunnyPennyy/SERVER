@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class TeacherAccountServiceImpl implements TeacherAccountService {
@@ -44,8 +45,12 @@ public class TeacherAccountServiceImpl implements TeacherAccountService {
         Teacher teacher = teacherRepository.findById(teacherId)
                 .orElseThrow(() -> new IllegalArgumentException("선생님이 존재하지 않습니다."));
 
-        // accountNum 생성 알고리즘 필요
-        String accountNum = "1111-11-1111";
+        // 계좌번호 생성 알고리즘 작성: 학교 코드, 반 코드, 번호
+        Random random = new Random();
+        long schoolCode = teacher.getClassroom().getSchool().getSchoolId() + 1000;
+        Long classroomCode = teacher.getClassroom().getClassroomId() + 10000;
+        String uniqueNumber = String.format("%05d", random.nextInt(100000));
+        String accountNum = classroomCode + "-" + schoolCode + "-" + uniqueNumber;
 
         TeacherAccount teacherAccount = new TeacherAccount(nickname, 100000000, accountNum, teacher);
         return teacherAccountRepository.save(teacherAccount);

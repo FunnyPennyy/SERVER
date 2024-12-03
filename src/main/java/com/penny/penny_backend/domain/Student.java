@@ -17,6 +17,7 @@ public class Student {
     private Long studentId;
     private String studentName;
     private Integer credit;
+    private Integer num;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
