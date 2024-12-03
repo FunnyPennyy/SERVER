@@ -21,9 +21,6 @@ import java.util.*;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider){
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -34,28 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
 
 
-            String username = jwtTokenProvider.getUsername(token);
-            //Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, null);
+            //String username = jwtTokenProvider.getUsername(token);
+            //Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, null);
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         chain.doFilter(request, response);
     }
-
-/*
-    public Authentication getAuthentication(String accessToken) {
-        Claims claims = jwtTokenProvider.parseClaims(accessToken);
-
-        if (claims.get("role") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
-        }
-
-        String role = claims.get("role").toString();
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(role));
-
-        return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
-    }
-*/
 
 
     private String resolveToken(HttpServletRequest request) {

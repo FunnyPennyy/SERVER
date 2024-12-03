@@ -33,37 +33,25 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //public JwtToken generateToken(Authentication authentication){
-      public String generateToken(String username, String role ){
-/*        String authorities = authentication.getAuthorities().stream()
+    public JwtToken generateToken(Authentication authentication){
+        String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String role = authentication.getAuthorities().stream()
-                .findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElse("USER");*/
-
-        Claims claims = Jwts.claims().setSubject(username);
-        claims.put("role", role);
 
         long now = (new Date()).getTime();
         Date issuedAt = new Date();
         Date accessTokenExpiresln = new Date(issuedAt.getTime()+86400000);
 
-        //header 설정 추가
-/*      Map<String, Object> headers = new HashMap<>();
-        headers.put("alg", "HS256");
-        headers.put("typ", "JWT");
 
         String accessToken = Jwts.builder()
                 .setHeader(createHeaders())
                 .setSubject(authentication.getName())
-                .claim("role", role)
                 .claim("iss", "off")
                 .claim("aud", authentication.getName())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresln)
+                .setIssuedAt(issuedAt)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -82,34 +70,28 @@ public class JwtTokenProvider {
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .build();*/
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(issuedAt)
-                .setExpiration(accessTokenExpiresln)
-                .signWith(key, SignatureAlgorithm.ES256)
-                .compact();
-
+                .build();
     }
 
-/*    public Authentication getAuthentication(String accessToken){
+
+    public Authentication getAuthentication(String accessToken){
 
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get("username") == null){
+        if (claims.get("auth") == null){
             log.error("권한 정보가 없는 토큰입니다. ");
             throw  new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         Collection<? extends  GrantedAuthority> authorities =
-                Arrays.stream(claims.get("username").toString().split(","))
+                Arrays.stream(claims.get("auth").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
 
 
-    }*/
+    }
 
     // 토큰 정보를 검증하는 메서드
     public boolean validateToken(String token) {
@@ -133,7 +115,7 @@ public class JwtTokenProvider {
 
 
     //getUsername - token에서 username 추출
-/*    public Claim parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -143,20 +125,16 @@ public class JwtTokenProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
-    }*/
-
-    public String getUsername(String accessToken) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(accessToken)
-                .getBody()
-                .getSubject();
-
     }
 
+    private static Map<String, Object> createHeaders() {
+        //header 설정 추가
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("alg", "HS256");
+        headers.put("typ", "JWT");
+        return headers;
 
-
+    }
 
 }
 

@@ -17,21 +17,21 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     MemberRepository memberRepository;
 
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-
+    @Override
     public UserDetails loadUserByUsername(String username) throws
             UsernameNotFoundException{
         return (UserDetails) memberRepository.findByUsername(username)
-//                .map(this::createUserDetails)
-                .orElseThrow(()->new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다." + username));
+                .map(this::createUserDetails)
+               .orElseThrow(()->new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다." + username));
+
     }
 
-//    public  UserDetails createUserDetails(Member member){
-//        return Member.builder()
-//                .username(member.getUsername())
-//                .password((passwordEncoder.encode(member.getPassword())))
-//                .build();
-//    }
+    public  UserDetails createUserDetails(Member member){
+        return new org.springframework.security.core.userdetails.User(
+                member.getUsername(),
+                member.getPassword(),
+                member.getAuthorities()
+        );
+    }
+
 }

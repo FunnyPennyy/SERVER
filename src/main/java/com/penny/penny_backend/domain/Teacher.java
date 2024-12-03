@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Teacher {
+public class Teacher extends Member{
     @Id
     @GeneratedValue(strategy =  GenerationType.IDENTITY)
     private Long teacherId;
@@ -26,5 +26,12 @@ public class Teacher {
     @JoinColumn(name = "classroom_id", foreignKey = @ForeignKey(name = "fk_classroom"))
     private Classroom classroom;
 
+    public Teacher(String username, String password, String teacherName, Classroom classroom) {
+        super.setUsername(username);
+        super.setPassword(password);
+        super.setRole(Role.ADMIN); // Role 설정
+        this.teacherName = teacherName;
+        this.classroom = classroom;
+    }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
@@ -34,8 +35,9 @@ public class Member {
         ADMIN, USER
     }
 
+
     public List<GrantedAuthority> getAuthorities(){
-        return Collections.singletonList(new SimpleGrantedAuthority(role.num()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.name()));
     }
 
 

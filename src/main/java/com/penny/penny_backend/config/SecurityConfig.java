@@ -31,24 +31,11 @@ import java.util.Collections;
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfig (JwtTokenProvider jwtTokenProvider){
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(){
-        return new JwtAuthenticationFilter(jwtTokenProvider);
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return new CustomUserDetailsService();
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -67,13 +54,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/members/sign-in", "/members/sign-up").permitAll()
                         .requestMatchers("/members/test").hasRole("USER")
+                        .requestMatchers("/members/test2").hasRole("ADMIN")
                         .anyRequest().authenticated() //그 외는 권한 필요
 
                 )
                 .formLogin((form)-> form.disable())
                 .logout((logout)-> logout.permitAll());
 
-        http.addFilterBefore(jwtAuthenticationFilter(),UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
