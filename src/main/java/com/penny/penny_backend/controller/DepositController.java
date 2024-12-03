@@ -15,33 +15,48 @@ import java.util.List;
 
 @RestController
 public class DepositController {
+
     private final DepositService depositService;
 
     public DepositController(DepositService depositService) {
         this.depositService = depositService;
     }
-
-    @GetMapping("/deposits")
-    public ResponseEntity<List<DepositResponse>> getAllDeposits() {
-        return ResponseEntity.ok(depositService.getAllDeposits());
+    
+    // 사용자 모든 예금 조회
+    @GetMapping("/deposit")
+    public ResponseEntity<List<DepositResponse>> getAllDeposits(
+            @RequestParam(name = "ownerId", required = false) Long ownerId // 파라미터 이름 명시
+    ) {
+        if (ownerId != null) {
+            return ResponseEntity.ok(depositService.getDepositsByOwner(ownerId)); // 특정 사용자 예금 조회
+        } else {
+            return ResponseEntity.ok(depositService.getAllDeposits()); // 모든 예금 조회
+        }
     }
-
-    @PostMapping("/deposits")
+    
+    // 예금 생성
+    @PostMapping("/deposit")
     public ResponseEntity<DepositResponse> createDeposit(@RequestBody DepositRequest depositRequest) {
         return ResponseEntity.ok(depositService.createDeposit(depositRequest));
     }
-
-    @PostMapping("/deposits/{id}/terminate")
-    public ResponseEntity<String> terminateDeposit(@PathVariable Long id, @RequestParam Long studentId) { // userId → studentId
+    
+    // 예금 해지
+    @DeleteMapping("/deposit/{id}/terminate")
+    public ResponseEntity<String> terminateDeposit(
+        @PathVariable("id") Long id,
+        @RequestParam(name = "studentId") Long studentId // 이름 명시
+    ) {
         return ResponseEntity.ok(depositService.terminateDeposit(id, studentId));
     }
-
-    @GetMapping("/deposits/types")
+    
+    // 모든 예금상품 조회
+    @GetMapping("/depositType")
     public ResponseEntity<List<DepositTypeResponse>> getAllDepositTypes() {
         return ResponseEntity.ok(depositService.getAllDepositTypes());
     }
-
-    @PostMapping("/deposits/types")
+    
+    // 예금상품 생성
+    @PostMapping("/depositType")
     public ResponseEntity<DepositTypeResponse> createDepositType(@RequestBody DepositTypeRequest depositTypeRequest) {
         return ResponseEntity.ok(depositService.createDepositType(depositTypeRequest));
     }

@@ -33,16 +33,19 @@ public class Member implements UserDetails {
 //    private String role; //TEACHER (admin) or Student(User)
 
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
-    private List<String> roles = new ArrayList<>();
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    @Builder.Default
+//    private List<String> roles = new ArrayList<>();
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return this.roles.stream()
+//                .map(SimpleGrantedAuthority::new)
+//                .collect(Collectors.toList());
+//    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+        return null;
     }
-
 
     @Override
     public String getPassword() {
@@ -66,17 +69,17 @@ public class Member implements UserDetails {
     }
 
     @Override
-    public boolean isAccountNonLocked() {
+    public boolean isAccountNonLocked() { //계정 만료 여부
         return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired() {
+    public boolean isCredentialsNonExpired() { //비밀번호 만료 여부
         return true;
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isEnabled() { // 사용자 활성화 여부
         return true;
     }
 

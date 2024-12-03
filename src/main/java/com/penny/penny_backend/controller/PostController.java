@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 //import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,16 +31,16 @@ public class PostController {
     }
 
     // 게시글 수정 (선생님만)
-//    @PreAuthorize("hasRole('TEACHER')") // 선생님만
+    //@PreAuthorize("hasRole('TEACHER')") // 선생님만
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponse> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequest request) {
+    public ResponseEntity<PostResponse> updatePost(@PathVariable("id") Long id, @RequestBody UpdatePostRequest request) {
         Post post = postService.update(id, request);
         return ResponseEntity.ok(new PostResponse(post));
     }
 
     // 게시글 단일 조회 (선생님 학생 모두)
     @GetMapping("/post/{id}")
-    public ResponseEntity<PostResponse> findPost(@PathVariable Long id) {
+    public ResponseEntity<PostResponse> findPost(@PathVariable("id") Long id) {
         Post post = postService.getPost(id);
         return ResponseEntity.ok(new PostResponse(post));
     }
@@ -55,9 +55,9 @@ public class PostController {
     }
 
     // 게시글 삭제 (선생님만)
-//    @PreAuthorize("hasRole('TEACHER')") // 선생님만
+    //@PreAuthorize("hasRole('TEACHER')") // 선생님만
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable("id") Long id) {
         postService.deletePost(id);
         return ResponseEntity.ok().build();
     }
