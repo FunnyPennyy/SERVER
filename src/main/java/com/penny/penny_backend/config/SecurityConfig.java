@@ -52,7 +52,7 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/members/sign-in", "/members/sign-up").permitAll()
+                        .requestMatchers("/members/sign-in", "/members/sign-up", "/students/sign-up", "/teachers/sign-up").permitAll()
                         .requestMatchers("/members/test").hasRole("USER")
                         .requestMatchers("/members/test2").hasRole("ADMIN")
                         .anyRequest().authenticated() //그 외는 권한 필요

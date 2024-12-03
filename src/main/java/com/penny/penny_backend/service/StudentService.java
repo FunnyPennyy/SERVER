@@ -1,6 +1,7 @@
 package com.penny.penny_backend.service;
 
 import com.penny.penny_backend.domain.Classroom;
+import com.penny.penny_backend.domain.Member;
 import com.penny.penny_backend.domain.Student;
 import com.penny.penny_backend.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,17 @@ public class StudentService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Student createStudent(String username, String password, String studentName, Integer credit, Classroom classroom) {
-        Student student = new Student(username, passwordEncoder.encode(password), studentName, credit, classroom);
+    public Student createStudent(String username, String password) {
+        if (studentRepository.findByUsername(username).isPresent()) {
+            throw new IllegalStateException("Username already exists.");
+        }
+
+        Student student = new Student();
+        student.setUsername(username);
+        student.setPassword(passwordEncoder.encode(password));
+        student.setRole(Member.Role.USER); // Role 자동 설정
+
         return studentRepository.save(student);
     }
 }
+

@@ -1,7 +1,7 @@
-/*
 package com.penny.penny_backend.controller;
 
 import com.penny.penny_backend.domain.Teacher;
+import com.penny.penny_backend.dto.TeacherRequest;
 import com.penny.penny_backend.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +17,10 @@ public class TeacherController {
 
     private final TeacherService teacherService;
 
-    @PostMapping("/sign-up")
+    @PostMapping(value = "/sign-up")
     public ResponseEntity<Teacher> createTeacher(@RequestBody TeacherRequest request) {
-        Teacher teacher = teacherService.createTeacher(
-                request.getUsername(),
-                request.getPassword(),
-                request.getTeacherName(),
-                request.getClassroom()
-        );
+        Teacher teacher = teacherService.createTeacher(request.getUsername(), request.getPassword());
         return ResponseEntity.ok(teacher);
     }
+
 }
-*/
