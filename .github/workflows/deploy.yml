@@ -30,3 +30,6 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }} "
           cd ~/project && sudo docker-compose up -d
           "
+
+      - name: Debug SSH Key
+        run: ssh-add -l
