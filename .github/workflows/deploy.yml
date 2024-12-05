@@ -1,0 +1,32 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - handa3 # 특정 브랜치(handa3)에 푸시될 때 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.AZURE_VM_SSH_KEY }}
+
+      - name: Deploy to Azure VM
+        run: |
+          # 프로젝트 디렉토리를 생성
+          ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }} "mkdir -p ~/project"
+          
+          # VM에 프로젝트 파일 전송
+          scp -o StrictHostKeyChecking=no -r ./* ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }}:~/project
+          
+          # Docker Compose 실행
+          ssh -o StrictHostKeyChecking=no ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }} "
+          cd ~/project && sudo docker-compose up -d
+          "
