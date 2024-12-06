@@ -63,7 +63,7 @@ RUN chmod +x gradlew
 RUN ./gradlew clean build -x test
 
 # 8. Move the JAR file (수정된 부분)
-RUN mv build/libs/*.jar app.jar
+COPY build/libs/*.jar app.jar
 
 # 9. Expose the application port
 EXPOSE 8080
