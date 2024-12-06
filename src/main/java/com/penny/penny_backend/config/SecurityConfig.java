@@ -6,11 +6,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,6 +26,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 
 
+import static org.springframework.security.config.Customizer.withDefaults;
 import java.security.cert.CertPathBuilder;
 import java.util.Collections;
 
@@ -29,16 +37,11 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource(){
             @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
+            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                 CorsConfiguration config = new CorsConfiguration();
                 config.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
                 config.setAllowedMethods(Collections.singletonList("*"));
@@ -54,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/members/sign-in").permitAll()
                         .requestMatchers("/members/sign-up").permitAll()
                         //.anyRequest().authenticated() //그 외는 권한 필요
-                        .anyRequest().permitAll()
+                        .anyRequest().permitAll() // 다 열어둠(테스트용)
 
                 )
                 .formLogin((form)-> form.disable())
@@ -79,6 +82,25 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(
+            HttpSecurity http,
+            PasswordEncoder passwordEncoder
+    ) throws Exception {
+        AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authManagerBuilder
+                .userDetailsService(username -> null) // Add custom user details service
+                .passwordEncoder(passwordEncoder);
+
+        return authManagerBuilder.build(); // Remove .and()
+    }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // BCrypt Encoder 사용
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 }
 
 
