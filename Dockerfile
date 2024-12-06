@@ -26,6 +26,8 @@ RUN chmod +x gradlew
 # 8. Build the application using Gradle
 RUN ./gradlew clean build -x test
 
+RUN ls build/libs
+
 # 9. Copy the generated JAR file to the working directory
 COPY build/libs/*.jar app.jar
 
