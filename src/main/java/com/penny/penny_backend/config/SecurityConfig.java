@@ -2,6 +2,8 @@ package com.penny.penny_backend.config;
 
 import com.penny.penny_backend.jwt.JwtAuthenticationFilter;
 import com.penny.penny_backend.jwt.JwtTokenProvider;
+import com.penny.penny_backend.service.CustomUserDetailsService;
+import io.jsonwebtoken.Jwt;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,46 +40,34 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource(){
-            @Override
-            public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                CorsConfiguration config = new CorsConfiguration();
-                config.setAllowedOrigins(Collections.singletonList("http://localhost:3000/"));
-                config.setAllowedMethods(Collections.singletonList("*"));
-                config.setAllowCredentials(true);
-                config.setAllowedHeaders(Collections.singletonList("*"));
-                config.setMaxAge(3600L); //1시간
-                return config;
-            }
+        http.cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+            config.setAllowedMethods(Collections.singletonList("*"));
+            config.setAllowedHeaders(Collections.singletonList("*"));
+            config.setAllowCredentials(true);
+            config.setMaxAge(3600L); // 1시간
+            return config;
         }));
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/members/sign-in").permitAll()
-                        .requestMatchers("/members/sign-up").permitAll()
-                        //.anyRequest().authenticated() //그 외는 권한 필요
-                        .anyRequest().permitAll() // 다 열어둠(테스트용)
+                        .requestMatchers("/members/sign-in", "/members/sign-up", "/students/sign-up", "/teachers/sign-up").permitAll()
+                        .requestMatchers("/members/test").hasRole("USER")
+                        .requestMatchers("/members/test2").hasRole("ADMIN")
+                        .anyRequest().authenticated() //그 외는 권한 필요
 
                 )
                 .formLogin((form)-> form.disable())
                 .logout((logout)-> logout.permitAll());
-/*        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
-//                .csrf().disable()
-                // JWT를 사용하기 때문에 세션을 사용하지 않음
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/members/sign-in", "/members/sign-up").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }*/
 
         http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -7,24 +7,22 @@ import com.penny.penny_backend.domain.Classroom;
 import lombok.*;
 
 
+
 @Entity
-@Table(name = "teacher")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Teacher {
-    @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private Long teacherId;
-
-    @Column(name = "teacher_name", nullable = false)
-    private String teacherName;
+public class Teacher extends Member{
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "classroom_id", foreignKey = @ForeignKey(name = "fk_classroom"))
     private Classroom classroom;
 
+    public Teacher(String username, String password, Classroom classroom) {
+        super.setUsername(username);
+        super.setPassword(password);
+        super.setRole(Role.ADMIN); // Role 설정
+        this.classroom = classroom;
+    }
 
 }

@@ -6,22 +6,27 @@ import lombok.*;
 import com.penny.penny_backend.domain.Classroom;
 
 
+
+
 @Entity
-@Table(name = "student")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Student {
-    @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
-    private Long studentId;
-    private String studentName;
+public class Student extends Member{
+
     private Integer credit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Classroom classroom;
+
+    public Student(String username, String password, Integer credit, Classroom classroom) {
+        super.setUsername(username);
+        super.setPassword(password);
+        super.setRole(Role.USER); // Role 설정
+        this.credit = credit;
+        this.classroom = classroom;
+    }
 
 
 }
