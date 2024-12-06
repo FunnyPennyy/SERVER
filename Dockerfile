@@ -60,10 +60,10 @@ COPY src src
 RUN chmod +x gradlew
 
 # 7. Build the application using Gradle
-RUN ./gradlew clean build -x test
+RUN ./gradlew clean build -x test --info
 
 # 8. Move the JAR file (수정된 부분)
-COPY build/libs/*.jar app.jar
+RUN find build/libs/ -name '*.jar' -exec cp {} app.jar \;
 
 # 9. Expose the application port
 EXPOSE 8080
