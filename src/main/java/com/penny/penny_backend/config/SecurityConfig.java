@@ -52,7 +52,8 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/members/sign-in", "/members/sign-up", "/students/sign-up", "/teachers/sign-up").permitAll()
+                        // members/로 시작하는 url 모두 허용
+                        .requestMatchers("/members/**","/schools/**","/students/sign-up", "/teachers/sign-up").permitAll()
                         .requestMatchers("/members/test").hasRole("USER")
                         .requestMatchers("/members/test2").hasRole("ADMIN")
                         .anyRequest().authenticated() //그 외는 권한 필요

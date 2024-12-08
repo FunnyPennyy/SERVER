@@ -12,6 +12,5 @@ public class SchoolResponse {
         this.schoolName = school.getSchoolName();
         this.schoolAddress = school.getSchoolAddress();
 
-
     }
 }
