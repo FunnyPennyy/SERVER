@@ -16,17 +16,18 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping("/schools")
 public class SchoolController{
     private final SchoolService schoolService;
 
-    @PostMapping("/api/school")
+    @PostMapping("/create")
     public ResponseEntity<School> createSchool(@RequestBody CreateSchoolRequest request){
         School addSchool = schoolService.save(request);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addSchool);
     }
 
-    @GetMapping("/api/schools")
+    @GetMapping("/")
     public ResponseEntity<List<SchoolResponse>> findAllSchools(){
         List<SchoolResponse> schools = schoolService.findAll()
                 .stream()

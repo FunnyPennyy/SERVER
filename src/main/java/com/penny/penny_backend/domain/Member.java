@@ -41,52 +41,7 @@ public class Member {
     }
 
 
-//    @ElementCollection(fetch = FetchType.EAGER)
-//    @Builder.Default
-//    private List<String> roles = new ArrayList<>();
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return this.roles.stream()
-//                .map(SimpleGrantedAuthority::new)
-//                .collect(Collectors.toList());
-//    }
-//
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return Collections.singletonList(new SimpleGrantedAuthority(role));
-//    }
 
- /*   @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() { //계정 만료 여부
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() { //비밀번호 만료 여부
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() { // 사용자 활성화 여부
-        return true;
-    }
-*/
 }
 
 

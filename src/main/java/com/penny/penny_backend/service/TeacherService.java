@@ -5,6 +5,7 @@ import com.penny.penny_backend.domain.Member;
 import com.penny.penny_backend.domain.Teacher;
 import com.penny.penny_backend.repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,11 @@ public class TeacherService {
         teacher.setRole(Member.Role.ADMIN); // Role 자동 설정
 
         return teacherRepository.save(teacher);
+    }
+
+    public Teacher findByUsername(String username){
+        return teacherRepository.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("Teacher not found"));
     }
 }
 

@@ -23,7 +23,7 @@ public class DepositResponse {
 
     public DepositResponse(Deposit deposit) {
         this.id = deposit.getId();
-        this.ownerId = deposit.getOwner().getStudentId();
+        this.ownerId = deposit.getOwner().getId();
         this.accountAmount  = deposit.getAccount().getAmount();
         this.amount  = deposit.getAmount();
         this.createdDate = deposit.getCreatedDate();

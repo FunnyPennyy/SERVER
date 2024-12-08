@@ -8,19 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.Customizer;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -29,7 +22,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 
 
-import static org.springframework.security.config.Customizer.withDefaults;
 import java.security.cert.CertPathBuilder;
 import java.util.Collections;
 
@@ -60,7 +52,8 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/members/sign-in", "/members/sign-up", "/students/sign-up", "/teachers/sign-up").permitAll()
+                        // members/로 시작하는 url 모두 허용
+                        .requestMatchers("/members/**","/schools/**","/students/sign-up", "/teachers/sign-up").permitAll()
                         .requestMatchers("/members/test").hasRole("USER")
                         .requestMatchers("/members/test2").hasRole("ADMIN")
                         .anyRequest().authenticated() //그 외는 권한 필요
@@ -73,25 +66,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            HttpSecurity http,
-            PasswordEncoder passwordEncoder
-    ) throws Exception {
-        AuthenticationManagerBuilder authManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authManagerBuilder
-                .userDetailsService(username -> null) // Add custom user details service
-                .passwordEncoder(passwordEncoder);
-
-        return authManagerBuilder.build(); // Remove .and()
-    }
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // BCrypt Encoder 사용
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
 }
 
 
