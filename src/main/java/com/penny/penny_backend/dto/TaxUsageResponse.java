@@ -29,12 +29,12 @@ public class TaxUsageResponse {
 
         // 기록자 Teacher ID 설정
         if (taxUsage.getRecorderTeacher() != null) {
-            this.recorderTeacherId = taxUsage.getRecorderTeacher().getTeacherId();  // Teacher ID
+            this.recorderTeacherId = taxUsage.getRecorderTeacher().getId();  // Teacher ID
         }
 
         // 기록자 Student ID 설정
         if (taxUsage.getRecorderStudent() != null) {
-            this.recorderStudentId = taxUsage.getRecorderStudent().getStudentId();  // Student ID
+            this.recorderStudentId = taxUsage.getRecorderStudent().getId();  // Student ID
         }
 
     }

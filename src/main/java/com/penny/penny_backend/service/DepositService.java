@@ -59,7 +59,7 @@ public class DepositService {
         Student owner = studentRepository.findById(depositRequest.getOwnerId())
                 .orElseThrow(() -> new RuntimeException("Owner student not found"));
 
-        Account account = accountRepository.findById(owner.getStudentId())
+        Account account = accountRepository.findById(owner.getId())
                 .orElseThrow(() -> new RuntimeException("Account not found for student ID"));
 
         DepositType depositType = depositTypeRepository.findById(depositRequest.getDepositTypeId())
@@ -153,7 +153,7 @@ public class DepositService {
     private DepositResponse convertToDepositResponse(Deposit deposit) {
         return DepositResponse.builder()
                 .id(deposit.getId())
-                .ownerId(deposit.getOwner().getStudentId())
+                .ownerId(deposit.getOwner().getId())
                 .accountAmount(deposit.getAccount().getAmount())
                 .amount(deposit.getAmount())
                 .createdDate(deposit.getCreatedDate())

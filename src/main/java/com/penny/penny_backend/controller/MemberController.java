@@ -37,18 +37,6 @@ public class MemberController {
         return ResponseEntity.ok("Logged out successfully.");
     }
 
-
-/*    @PostMapping("/sign-in")
-    public JwtToken signIn(@RequestBody SignInRequest signInRequest) {
-
-        String username = signInRequest.getUsername();
-        String password = signInRequest.getPassword();
-        JwtToken jwtToken = memberService.signIn(username, password);
-        log.info("request username = {}, password = {}", username, password);
-        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-        return jwtToken;
-    }*/
-
     @PostMapping("/test")
     public String test() {
         return "success";
