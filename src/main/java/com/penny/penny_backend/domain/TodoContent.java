@@ -23,7 +23,8 @@ public class TodoContent {
     private String content;
     private boolean isChecked;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+//    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 

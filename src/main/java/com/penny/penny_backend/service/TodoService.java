@@ -1,8 +1,10 @@
 package com.penny.penny_backend.service;
 
+import com.penny.penny_backend.domain.Todo;
 import com.penny.penny_backend.domain.TodoContent;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 public interface TodoService {
@@ -21,7 +23,9 @@ public interface TodoService {
 
     // 개별 투두 추가
     void addTodo(Long todoId, String newTodo, boolean check);
-//
+
     // 날짜로 조회
     List<TodoContent> getTodoContentsByStudentIdAndDate(Long studentId, LocalDate date);
+
+    List<Todo> getDatesWithTodosByStudentId(YearMonth yearMonth, Long studentId);
 }

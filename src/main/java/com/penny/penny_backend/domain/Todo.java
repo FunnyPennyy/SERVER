@@ -24,8 +24,8 @@ public class Todo {
 
     private LocalDate date;
     private Long studentId;
-//
-    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<TodoContent> todoContents = new ArrayList<>();
 
     public Todo(Long studentId) {

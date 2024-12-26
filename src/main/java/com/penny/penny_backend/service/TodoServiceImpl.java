@@ -11,6 +11,7 @@ import com.penny.penny_backend.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 @Service
@@ -35,6 +36,10 @@ public class TodoServiceImpl implements TodoService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 Student ID를 가진 학생이 존재하지 않습니다."));
         Job job = jobRepository.findById(student.getJob().getJobId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 Job ID를 가진 Job이 존재하지 않습니다."));
+        LocalDate today = LocalDate.now();
+        if (todoRepository.existsByStudentIdAndDate(student.getStudentId(), today)) {
+            throw new IllegalArgumentException("오늘 날짜의 Todo가 이미 존재합니다.");
+        }
 
         Todo todo = new Todo(student.getStudentId());
         todoRepository.save(todo);
@@ -76,6 +81,7 @@ public class TodoServiceImpl implements TodoService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 TodoContent를 찾을 수 없습니다."));
 
         todoContent.getTodo().getTodoContents().remove(todoContent);
+        todoContentRepository.delete(todoContent);
     }
 
     @Override
@@ -99,5 +105,16 @@ public class TodoServiceImpl implements TodoService {
 
         // Todo와 연결된 TodoContents 반환
         return todo.getTodoContents();
+    }
+
+    // 특정 월의 투두리스트가 있는 날짜 조회 (학생 ID 포함)
+    @Override
+    public List<Todo> getDatesWithTodosByStudentId(YearMonth yearMonth, Long studentId) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 Student ID를 가진 학생이 존재하지 않습니다."));
+
+        LocalDate start = yearMonth.atDay(1);
+        LocalDate end = yearMonth.atEndOfMonth();
+        return todoRepository.findDistinctByDateBetweenAndStudentId(start, end, studentId);
     }
 }
