@@ -56,6 +56,8 @@ public class SecurityConfig {
                         .requestMatchers("/members/**","/schools/**","/students/sign-up", "/teachers/sign-up").permitAll()
                         .requestMatchers("/members/test").hasRole("USER")
                         .requestMatchers("/members/test2").hasRole("ADMIN")
+                        .requestMatchers("/homework").permitAll()
+                        .requestMatchers("/homeworkStatus/**").permitAll()
                         .anyRequest().authenticated() //그 외는 권한 필요
 
                 )
