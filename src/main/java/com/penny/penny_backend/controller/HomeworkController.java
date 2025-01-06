@@ -35,8 +35,8 @@ public class HomeworkController {
     // 특정 학생의 숙제 상태 조회
     @GetMapping("/homeworkStatus/{studentId}/{homeworkId}")
     public ResponseEntity<HomeworkStatusResponse> getHomeworkStatus(
-            @PathVariable Long studentId,
-            @PathVariable Long homeworkId) {
+            @PathVariable("studentId") Long studentId,
+            @PathVariable("homeworkId") Long homeworkId) {
         HomeworkStatusResponse response = homeworkService.getHomeworkStatus(studentId, homeworkId);
         return ResponseEntity.ok(response);
     }
