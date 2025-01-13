@@ -89,8 +89,6 @@ public class JwtTokenProvider {
                         .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(claims.getSubject(), "", authorities);
-
-
     }
 
     // 토큰 정보를 검증하는 메서드
@@ -135,6 +133,31 @@ public class JwtTokenProvider {
         return headers;
 
     }
+
+
+    // mypage를 위한 token 인증
+    public String extractTokenFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            log.debug("TokenService - 헤더에서 토큰 찾음");
+            return bearerToken.substring(7); // "Bearer " 이후의 토큰 부분 추출
+        }
+        log.debug("TokenService -  헤더에 토큰 없음.");
+        return null;
+    }
+
+    public String getUsername(HttpServletRequest request){
+        String token = extractTokenFromHeader(request);
+
+        if (token == null || !validateToken(token)) {
+            throw new SecurityException("유효하지 않은 토큰입니다.");
+        }
+
+        String username = parseClaims(token).getSubject();
+        log.debug("TokenService - 헤더에서 추출한 토큰의 user Id: {}", username);
+        return username;
+    }
+
 
 }
 

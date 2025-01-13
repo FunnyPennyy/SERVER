@@ -3,8 +3,11 @@ package com.penny.penny_backend.service;
 import com.penny.penny_backend.domain.Classroom;
 import com.penny.penny_backend.domain.Member;
 import com.penny.penny_backend.domain.Student;
+import com.penny.penny_backend.dto.StudentPageResponse;
+import com.penny.penny_backend.dto.StudentRequest;
 import com.penny.penny_backend.repository.StudentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,14 @@ public class StudentService {
         student.setRole(Member.Role.USER); // Role 자동 설정
 
         return studentRepository.save(student);
+    }
+
+
+    public StudentPageResponse getStudentInfo(String username) {
+        Student student = studentRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("없는 username"));
+
+        return new StudentPageResponse(student.getId(), student.getUsername(), student.getCredit());
     }
 }
 
